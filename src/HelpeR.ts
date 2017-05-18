@@ -1,3 +1,6 @@
+import { IncomingMessage } from 'http';
+ 
+
 export class Helpers {
 
 	static JSONify(value: Object) {
@@ -10,4 +13,8 @@ export class Helpers {
 			JSON.stringify(value);
 	}
 	
+	static hasBody(req: IncomingMessage): boolean {}
+
+	static parseBody(req: IncomingMessage): Buffer | string {}
+
 }

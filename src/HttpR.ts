@@ -8,9 +8,9 @@ import * as net from 'net';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 
-import { ServeRxConfig } from './Config';
-import { RequestRx } from './Request';
-
+import { ServeRxConfig } from './ConfigR';
+import { RequestR, IncomingReq } from './RequestR';
+import { SocketR } from './SocketR';
 
 export interface HttpSocketUpgrade {
 	req: IncomingMessage;
@@ -25,11 +25,7 @@ export type HttpClientError = {
 
 export type HttpEvent = HttpClientError | HttpSocketUpgrade;
 
-export class HttpRx extends Observable<HttpEvent> {
-
-	private _handleRequest(req__: RequestRx) {
-		this.config.http.requestHandler(req__);
-	}
+export class HttpR extends Observable<HttpEvent> {
 
 	constructor(public config: ServeRxConfig<any>) {
 		super((observer: Observer<HttpEvent>) => {
@@ -44,9 +40,8 @@ export class HttpRx extends Observable<HttpEvent> {
 			_server.on('request',
 				(req: IncomingMessage, res: ServerResponse) => { 
 					if (this.config.http.requestHandler) {
-						let req__ = new RequestRx(req, res);
-						this._handleRequest(req__); }
-					else { 
+						let socket__ = new SocketR(config, 'http', req, res);
+					} else { 
 						res.statusCode = 500;
 						res.end({"message":"<h1>No Request Handler Found<h1>"}, 'utf8');
 					}});

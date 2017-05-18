@@ -46,6 +46,7 @@
     "restify-errors": "^4.2.3",
     "restify-plugins": "^1.0.3",
     "rxjs": "^5.4.0",
+    "uuid": "^3.0.1",
     "validator": "^7.0.0",
     "watershed": "^0.3.0"
   },

@@ -1,11 +1,32 @@
 
 import * as parseRange from 'range-parser';
 
-export type Header = {[name: string]: string[];
+import { IncomingMessage } from 'http';
 
-export class Headers {
+import { RequestR } from '../RequestR';
+
+/// Allow in the response header if path exists but method not supported
+// res tag X-Powered-By: ServeRx by Matthew Keil
+// X-Frame-Options: [deny, sameorigin, allow-from, allow-all] - prevents clickjacking
+// X-UA-Compatible: Chrome=1  // set ie engine to use chrome instead
+// User-Agent figures out what browser and device are being used
+
+export type Header = {[name: string]: string[]};
+
+export class HeadeR {
 
 	public list: Header[];
+
+	constructor(config?: HttpServeRConfig) {
+		if (req) this.next(req);
+	}
+
+	next(req: IncomingMessage) {
+		Object.keys(req.headers).forEach(key => {
+			key.toLowerCase();
+			this.list.push({key: req.headers[key]})
+		});
+	}
 
 	public getHeader(name: string): string {
 		return this.list[name.toLowerCase()].;
@@ -56,6 +77,8 @@ export class Headers {
 		return this;
 	};
 
+
+
 	public addLink(links: any): this {
 
 		let formatedLinks = '';
@@ -73,31 +96,6 @@ export class Headers {
 		return (this.getHeader('transfer-encoding') === 'chunked');
 	};
 
-	public setNoCache(version: string): this {
-		if (version === '1.1') {
-			this.list['Cache-Control'] = 'no-cache, no-store, must-revalidate';
-		} else if (version === '1.0') {
-			this.list['Pragma'] = 'no-cache';
-		} else {
-			this.list['Expires'] = '0';
-		}
-
-		return this;
-	};
-
-	public setCache(type?: string, options?: any): this {
-		if (typeof type !== 'string') {
-			options = type;
-			type = 'public';
-		}
-
-		if (options && options.maxAge !== undefined) {
-			type += ', max-age=' + options.maxAge;
-		}
-
-		this.list['Cache-Control'] = type;
-		return this;
-	};
 
 	public isKeepAlive(version: string): boolean {
 

@@ -1,32 +1,75 @@
+import { ServerResponse } from 'http';
 
 
-export interface ResopnseRxI {
-	// close event
-	// finish event
-	statusCode: number;
-	statusMessage: string;
-	end(data?: any, encoding?: string, callback?: Function): void;
-	setTimeout(msec: number, callback: Function): void;
-	write(chunk: any, encoding: string, callback: Function): boolean;
-	writeHead(statusCode: number, statusMessage: string, headers: Headers)
-}
+import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
+import { merge } from 'rxjs/operator/merge';
+import { FromEventObservable } from 'rxjs/observable/FromEventObservable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-export class ResponseRx implements ResponseRxI {
+
+import { IncomingReq, RequestR } from './RequestR';
+import { Helpers } from './HelpeR';
+import { Header, HeadeR } from './headers/HeadeR';
+import { ServeRConfig } from './ConfigR';
+
+
+export class OutgoingRes {
+
+	headers: {
+		written: boolean;
+		list: Header[]
+	};
+	body?: string | Buffer;
+
+	constructor(public id: string) {
+
+	// default headers
+
+	}
+};
+
+export class RespondeR extends OutgoingRes {
 
 	private charsetRegExp = /;\s*charset\s*=/;
-	public statusCode: number;
-	public statusMessage: string;
+	id: string;
+	date: Date;
+	statusCode: number;
+	statusMessage: string;
+	headers: HeadeR;
+	content: ContentR;
+	body?: Buffer | string;
+	que?: [{
+		req: RequestR;
+		res: OutgoingRes;
+	}]
+
+	constructor() {
+		super('ServeRx by Matthew Keil');
+	}
+
+	public runNext(req: RequestR): this {
+		this.id = req.id;
+		this.que.push({req, res: new OutgoingRes(req.id)});
+		return this;
+	}
+
+	public writeHead(statusCode: number, reasonPhrase?: string, headers?: any): void {}
+
+	public write(chunk: Buffer | string, encoding?: string, fd?: string): void {
+	} 
+	public end(chunk?: Buffer | string, encoding?: string): void {}
 
 	public json(obj: Object) {
 
-		var body = this.stringify(obj);
+		var body = Helpers.JSONify(obj);
 
 		// content-type
-		if (!this.getHeader('Content-Type')) {
-			this.setHeader('Content-Type', 'application/json');
+		if (!this.headers.getHeader('Content-Type')) {
+			this.headers.setHeader('Content-Type', 'application/json');
 		}
 
-		return this.send(body);
+		return this.write(body);
 	};
 
 	public sendStatus(code: number) {
@@ -117,94 +160,93 @@ export class ResponseRx implements ResponseRxI {
 		}
 	};
 
-
 }
+		/**
+		 * Respond to the Acceptable formats using an `obj`
+		 * of mime-type callbacks.
+		 *
+		 * This method uses `req.accepted`, an array of
+		 * acceptable types ordered by their quality values.
+		 * When "Accept" is not present the _first_ callback
+		 * is invoked, otherwise the first match is used. When
+		 * no match is performed the server responds with
+		 * 406 "Not Acceptable".
+		 *
+		 * Content-Type is set for you, however if you choose
+		 * you may alter this within the callback using `res.type()`
+		 * or `res.set('Content-Type', ...)`.
+		 *
+		 *    res.format({
+		 *      'text/plain': function(){
+		 *        res.send('hey');
+		 *      },
+		 *
+		 *      'text/html': function(){
+		 *        res.send('<p>hey</p>');
+		 *      },
+		 *
+		 *      'appliation/json': function(){
+		 *        res.send({ message: 'hey' });
+		 *      }
+		 *    });
+		 *
+		 * In addition to canonicalized MIME types you may
+		 * also use extnames mapped to these types:
+		 *
+		 *    res.format({
+		 *      text: function(){
+		 *        res.send('hey');
+		 *      },
+		 *
+		 *      html: function(){
+		 *        res.send('<p>hey</p>');
+		 *      },
+		 *
+		 *      json: function(){
+		 *        res.send({ message: 'hey' });
+		 *      }
+		 *    });
+		 *
+		 * By default Express passes an `Error`
+		 * with a `.status` of 406 to `next(err)`
+		 * if a match is not made. If you provide
+		 * a `.default` callback it will be invoked
+		 * instead.
+		 *
+		 * @param {Object} obj
+		 * @return {ServerResponse} for chaining
+		 * @public
+		*/
 
-/**
- * Respond to the Acceptable formats using an `obj`
- * of mime-type callbacks.
- *
- * This method uses `req.accepted`, an array of
- * acceptable types ordered by their quality values.
- * When "Accept" is not present the _first_ callback
- * is invoked, otherwise the first match is used. When
- * no match is performed the server responds with
- * 406 "Not Acceptable".
- *
- * Content-Type is set for you, however if you choose
- * you may alter this within the callback using `res.type()`
- * or `res.set('Content-Type', ...)`.
- *
- *    res.format({
- *      'text/plain': function(){
- *        res.send('hey');
- *      },
- *
- *      'text/html': function(){
- *        res.send('<p>hey</p>');
- *      },
- *
- *      'appliation/json': function(){
- *        res.send({ message: 'hey' });
- *      }
- *    });
- *
- * In addition to canonicalized MIME types you may
- * also use extnames mapped to these types:
- *
- *    res.format({
- *      text: function(){
- *        res.send('hey');
- *      },
- *
- *      html: function(){
- *        res.send('<p>hey</p>');
- *      },
- *
- *      json: function(){
- *        res.send({ message: 'hey' });
- *      }
- *    });
- *
- * By default Express passes an `Error`
- * with a `.status` of 406 to `next(err)`
- * if a match is not made. If you provide
- * a `.default` callback it will be invoked
- * instead.
- *
- * @param {Object} obj
- * @return {ServerResponse} for chaining
- * @public
- */
-
-res.format = function(obj){
-  var req = this.req;
-  var next = req.next;
-
-  var fn = obj.default;
-  if (fn) delete obj.default;
-  var keys = Object.keys(obj);
-
-  var key = keys.length > 0
-    ? req.accepts(keys)
-    : false;
-
-  this.vary("Accept");
-
-  if (key) {
-    this.set('Content-Type', normalizeType(key).value);
-    obj[key](req, this, next);
-  } else if (fn) {
-    fn();
-  } else {
-    var err = new Error('Not Acceptable');
-    err.status = err.statusCode = 406;
-    err.types = normalizeTypes(keys).map(function(o){ return o.value });
-    next(err);
-  }
-
-  return this;
-};
+	res.format = function(obj){
+		var req = this.req;
+		var next = req.next;
+		
+		var fn = obj.default;
+		if (fn) delete obj.default;
+		var keys = Object.keys(obj);
+		
+		var key = keys.length > 0
+			? req.accepts(keys)
+			: false;
+		
+		this.vary("Accept");
+		
+		if (key) {
+			this.set('Content-Type', normalizeType(key).value);
+			obj[key](req, this, next);
+		} else if (fn) {
+			fn();
+		} else {
+			var err = new Error('Not Acceptable');
+			err.status = err.statusCode = 406;
+			err.types = normalizeTypes(keys).map(function(o){ return o.value });
+			next(err);
+		}
+		
+		return this;
+	};
+	
 Response.prototype._findFormatter = function _findFormatter(callback) {
 
     var formatter;
@@ -254,6 +296,9 @@ Response.prototype._findFormatter = function _findFormatter(callback) {
     return callback(null, formatter, type);
 
 };
+
+
+
 
 
 /**

@@ -13,22 +13,22 @@ import { merge } from 'rxjs/operator/merge';
 
 import * as Store from '@ngrx/store';
 
-import { ServeRxConfig } from './Config';
-import { RequestRx } from './Request';
+import { ServeRxConfig } from './ConfigR';
+import { RequestR } from './RequestR';
 
 
 
 
 export class ServeRx<T> extends Observable<T> implements Rx.Observer<Event> {
 
-	httpServers: HttpRx[];
+	httpServers: HttpR[];
 
 	constructor(config: ServeRxConfig<T>) {
 		super();
 
 		// look for environment notification and ask to display it
 		if(config.http) {
-			this.httpServers.push(new HttpRx(config));
+			this.httpServers.push(new HttpR(config));
 		}
 	}
 
