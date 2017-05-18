@@ -16,39 +16,53 @@
 
 import { EventEmitter } from 'events';
 import * as finalhandler from 'finalhandler';
-import * as Router from './router';
-import * as methods from 'methods';
-import * as middleware from './middleware/init';
-import * as query from './middleware/query';
-import * as View from './view';
+import * as Methods from 'methods';
 import * as http from 'http';
 import * as flatten from 'array-flatten';
 import * as merge from 'utils-merge';
 import * as setPrototypeOf from 'setprototypeof'
-import { compileETag } from './utils';
-import { compileQueryParser } from './utils';
-import { compileTrust } from './utils';
 import { resolve } from 'path';
 import * as debug from 'debug';
+import * as Static from 'serve-static';
 debug('express:application');
 import * as deprecate from 'depd';
 deprecate('express');
 let slice = Array.prototype.slice;
 
 
+import * as req from './request';
+import * as res from './response';
+import * as Route from './router/route';
+import * as Router from './router'
+import * as Query from './middleware/query';
+import * as middleware from './middleware/init';
+import * as query from './middleware/query';
+import * as View from './view';
+import { compileETag } from './utils';
+import { compileQueryParser } from './utils';
+import { compileTrust } from './utils';
+
 
 /*
  * Application prototype.
  */
-export default class Application extends EventEmitter {
-	public trustProxyDefaultSymbol = '@@symbol:trust_proxy_default';
 	 /**
 	 * Variable for trust proxy inheritance back-compat
 	 * @private
 	 */
+export default class Application extends EventEmitter {
+	public trustProxyDefaultSymbol = '@@symbol:trust_proxy_default';
 	public cache: any;
 	public engines: any;
+	public request: any;
+	public response: any;
+	private _router: any;
+	public parent: any;
+	public methods: any[];
+	public locals: any;
 	public settings: any;
+	public static = Static;
+	public query = Query;
 	 /* Initialize the server.
 	 *
 	 *   - setup default configuration
@@ -57,6 +71,25 @@ export default class Application extends EventEmitter {
 	 *
 	 * @private
 	 */
+	constructor(){
+		super();
+		let app = <any>function(req, res, next) {
+			this.handle(req, res, next);
+		};
+
+		// expose the prototype that will get set on requests
+		this.request = Object.create(req, {
+			app: { configurable: true, enumerable: true, writable: true, value: app }
+		})
+
+		// expose the prototype that will get set on responses
+		this.response = Object.create(res, {
+			app: { configurable: true, enumerable: true, writable: true, value: app }
+		})
+
+		this.init();
+		return app;
+	 }
 	public init() {
 		this.cache = {};
 		this.engines = {};
@@ -68,6 +101,7 @@ export default class Application extends EventEmitter {
 	 * Initialize application configuration.
 	 * @private
 	 */
+
 	public defaultConfiguration() {
 		let env = process.env.NODE_ENV || 'development';
 
@@ -91,8 +125,8 @@ export default class Application extends EventEmitter {
 			// inherit trust proxy
 			if (this.settings[this.trustProxyDefaultSymbol] === true
 				&& typeof parent.settings['trust proxy fn'] === 'function') {
-				delete this.settings['trust proxy'];
-				delete this.settings['trust proxy fn'];
+					delete this.settings['trust proxy'];
+					delete this.settings['trust proxy fn'];
 			}
 
 			// inherit protos
@@ -128,13 +162,14 @@ export default class Application extends EventEmitter {
 	 *
 	 * @private
 	 */
+
 	public lazyrouter() {
 		if (!this._router) {
-			this._router = new Router({
+			let opts = {
 				caseSensitive: this.enabled('case sensitive routing'),
 				strict: this.enabled('strict routing')
-			});
-
+			};
+			this._router = new Router(opts);
 			this._router.use(query(this.get('query parser fn')));
 			this._router.use(middleware.init(this));
 		}
@@ -149,10 +184,10 @@ export default class Application extends EventEmitter {
 	 */
 
 	public handle(req, res, callback) {
-		var router = this._router;
+		let router = this._router;
 
 		// final handler
-		var done = callback || finalhandler(req, res, {
+		let done = callback || finalhandler(req, res, {
 			env: this.get('env'),
 			onerror: logerror.bind(this)
 		});
@@ -176,27 +211,27 @@ export default class Application extends EventEmitter {
 	 * @public
 	 */
 
-	public use(fn) {
-		var offset = 0;
-		var path = '/';
+	public use(fn: any) {
+		let offset = 0;
+		let path = '/';
 
 		// default path to '/'
 		// disambiguate app.use([fn])
 		if (typeof fn !== 'function') {
-			var arg = fn;
+			let arg = <Function[]>fn;
 
 			while (Array.isArray(arg) && arg.length !== 0) {
-				arg = arg[0];
+				arg = <any>arg[0];
 			}
 
 			// first arg is the path
 			if (typeof arg !== 'function') {
 				offset = 1;
-				path = fn;
+				path = <string>fn;
 			}
 		}
 
-		var fns = flatten(slice.call(arguments, offset));
+		let fns = <Function[]>flatten(slice.call(arguments, offset));
 
 		if (fns.length === 0) {
 			throw new TypeError('app.use() requires middleware functions');
@@ -204,30 +239,30 @@ export default class Application extends EventEmitter {
 
 		// setup router
 		this.lazyrouter();
-		var router = this._router;
+		let router = this._router;
 
-		fns.forEach(function (fn) {
+		fns.forEach(fn => {
 			// non-express app
-			if (!fn || !fn.handle || !fn.set) {
+			if (!fn || !(<any>fn).handle || !(<any>fn).set) {
 				return router.use(path, fn);
 			}
 
-			debug('.use app under %s', path);
-			fn.mountpath = path;
-			fn.parent = this;
+			debug(`use app under ${path}`);
+			(<any>fn).mountpath = path;
+			(<any>fn).parent = this;
 
 			// restore .app property on req and res
 			router.use(path, function mounted_app(req, res, next) {
-				var orig = req.app;
-				fn.handle(req, res, function (err) {
-				setPrototypeOf(req, orig.request)
-				setPrototypeOf(res, orig.response)
-				next(err);
+				let orig = req.app;
+				(<any>fn).handle(req, res, err => {
+					setPrototypeOf(req, orig.request)
+					setPrototypeOf(res, orig.response)
+					next(err);
 				});
 			});
 
 			// mounted an app
-			fn.emit('mount', this);
+			(<any>fn).emit('mount', this);
 		}, this);
 
 		return this;
@@ -286,7 +321,7 @@ export default class Application extends EventEmitter {
 		}
 
 		// get file extension
-		var extension = ext[0] !== '.'
+		let extension = ext[0] !== '.'
 			? '.' + ext
 			: ext;
 
@@ -306,7 +341,6 @@ export default class Application extends EventEmitter {
 	 * @return {app} for chaining
 	 * @public
 	 */
-
 	public param(name, fn) {
 		this.lazyrouter();
 
@@ -336,14 +370,13 @@ export default class Application extends EventEmitter {
 	 * @return {Server} for chaining
 	 * @public
 	 */
-
-	public set(setting, val) {
+	public set(setting, val?) {
 		if (arguments.length === 1) {
 			// app.get(setting)
 			return this.settings[setting];
 		}
 
-		debug('set "%s" to %o', setting, val);
+		debug(`set "${setting}" to ${val}`);
 
 		// set value
 		this.settings[setting] = val;
@@ -358,13 +391,11 @@ export default class Application extends EventEmitter {
 				break;
 			case 'trust proxy':
 				this.set('trust proxy fn', compileTrust(val));
-
 				// trust proxy inherit back-compat
-				Object.defineProperty(this.settings, trustProxyDefaultSymbol, {
-				configurable: true,
-				value: false
+				Object.defineProperty(this.settings, this.trustProxyDefaultSymbol, {
+					configurable: true,
+					value: false
 				});
-
 				break;
 		}
 
@@ -386,26 +417,13 @@ export default class Application extends EventEmitter {
 
 	public path() {
 		return this.parent
-		? this.parent.path() + this.mountpath
-		: '';
+			? this.parent.path() + this.mountpath
+			: '';
 	 };
 	 /**
 	 * Delegate `.VERB(...)` calls to `router.VERB(...)`.
 	 */
-	methods.forEach(function(method){
-		app[method] = function(path){
-			if (method === 'get' && arguments.length === 1) {
-				// app.get(setting)
-				return this.set(path);
-			}
 
-			this.lazyrouter();
-
-			var route = this._router.route(path);
-			route[method].apply(route, slice.call(arguments, 1));
-			return this;
-		};
-	 });
 	 /**
 	 * Special-cased "all" method, applying the given route `path`,
 	 * middleware, and callback to _every_ HTTP method.
@@ -415,14 +433,13 @@ export default class Application extends EventEmitter {
 	 * @return {app} for chaining
 	 * @public
 	 */
-
 	public all(path) {
 		this.lazyrouter();
 
-		var route = this._router.route(path);
-		var args = slice.call(arguments, 1);
+		let route = this._router.route(path);
+		let args = slice.call(arguments, 1);
 
-		for (var i = 0; i < methods.length; i++) {
+		for (let i = 0; i < methods.length; i++) {
 			route[methods[i]].apply(route, args);
 		}
 
@@ -446,12 +463,12 @@ export default class Application extends EventEmitter {
 	 */
 
 	public render(name, options, callback) {
-		var cache = this.cache;
-		var done = callback;
-		var engines = this.engines;
-		var opts = options;
-		var renderOptions = {};
-		var view;
+		let cache = this.cache;
+		let done = callback;
+		let engines = this.engines;
+		let opts = options;
+		let renderOptions = {};
+		let view;
 
 		// support callback function as second arg
 		if (typeof options === 'function') {
@@ -471,48 +488,47 @@ export default class Application extends EventEmitter {
 		merge(renderOptions, opts);
 
 		// set .cache unless explicitly provided
-		if (renderOptions.cache == null) {
-			renderOptions.cache = this.enabled('view cache');
+		if ((<any>renderOptions).cache == null) {
+			(<any>renderOptions).cache = this.enabled('view cache');
 		}
 
 		// primed cache
-		if (renderOptions.cache) {
+		if ((<any>renderOptions).cache) {
 			view = cache[name];
 		}
 
 		// view
 		if (!view) {
-			var View = this.get('view');
+				let View = this.get('view');
 
-			view = new View(name, {
+				view = new View(name, {
 				defaultEngine: this.get('view engine'),
 				root: this.get('views'),
 				engines: engines
 			});
 
 			if (!view.path) {
-				var dirs = Array.isArray(view.root) && view.root.length > 1
-				? 'directories "' + view.root.slice(0, -1).join('", "') + '" or "' + view.root[view.root.length - 1] + '"'
-				: 'directory "' + view.root + '"'
-				var err = new Error('Failed to lookup view "' + name + '" in views ' + dirs);
-				err.view = view;
+				let dirs = Array.isArray(view.root) && view.root.length > 1
+					? 'directories "' + view.root.slice(0, -1).join('", "') + '" or "' + view.root[view.root.length - 1] + '"'
+					: 'directory "' + view.root + '"';
+				let err = new Error(`Failed to lookup view "${name}" in views ${dirs}`);
+					(<any>err).view = view;
 				return done(err);
 			}
 
 			// prime the cache
-			if (renderOptions.cache) {
+			if ((<any>renderOptions).cache) {
 				cache[name] = view;
 			}
 		}
 
 		// render
-		tryRender(view, renderOptions, done);
+		this.tryRender(view, renderOptions, done);
 	 };
 	 /**
 	 * Try rendering a view.
 	 * @private
 	 */
-
 	public tryRender(view, options, callback) {
 		try {
 			view.render(options, callback);
@@ -520,4 +536,18 @@ export default class Application extends EventEmitter {
 			callback(err);
 		}
 	 }
+	// Methods.forEach(method => {
+	// 	this[method] = path => {
+	// 		if (method === 'get' && arguments.length === 1) {
+	// 			// app.get(setting)
+	// 			return this.set(path);
+	// 		}
+
+	// 		this.lazyrouter();
+
+	// 		var route = this._router.route(path);
+	// 		route[method].apply(route, slice.call(arguments, 1));
+	// 		return this;
+	// 	};
+	// });
 }
