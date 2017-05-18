@@ -5,9 +5,9 @@
  * MIT Licensed
  */
 
-'use strict';
 
-/**
+
+ /**
  * Module dependencies.
  * @api private
  */
@@ -18,12 +18,12 @@ var deprecate = require('depd')('express');
 var flatten = require('array-flatten');
 var mime = require('send').mime;
 var basename = require('path').basename;
-var etag = require('etag');
+var Etag = require('etag');
 var proxyaddr = require('proxy-addr');
 var qs = require('qs');
 var querystring = require('querystring');
 
-/**
+ /**
  * Return strong ETag for `body`.
  *
  * @param {String|Buffer} body
@@ -31,16 +31,15 @@ var querystring = require('querystring');
  * @return {String}
  * @api private
  */
-
-exports.etag = function (body, encoding) {
+export function etag (body, encoding) {
   var buf = !Buffer.isBuffer(body)
     ? new Buffer(body, encoding)
     : body;
 
-  return etag(buf, {weak: false});
-};
+  return Etag(buf, {weak: false});
+ };
 
-/**
+ /**
  * Return weak ETag for `body`.
  *
  * @param {String|Buffer} body
@@ -55,9 +54,9 @@ exports.wetag = function wetag(body, encoding){
     : body;
 
   return etag(buf, {weak: true});
-};
+ };
 
-/**
+ /**
  * Check if `path` looks absolute.
  *
  * @param {String} path
@@ -69,9 +68,9 @@ exports.isAbsolute = function(path){
   if ('/' === path[0]) return true;
   if (':' === path[1] && ('\\' === path[2] || '/' === path[2])) return true; // Windows device path
   if ('\\\\' === path.substring(0, 2)) return true; // Microsoft Azure absolute path
-};
+ };
 
-/**
+ /**
  * Flatten the given `arr`.
  *
  * @param {Array} arr
@@ -82,7 +81,7 @@ exports.isAbsolute = function(path){
 exports.flatten = deprecate.function(flatten,
   'utils.flatten: use array-flatten npm module instead');
 
-/**
+ /**
  * Normalize the given `type`, for example "html" becomes "text/html".
  *
  * @param {String} type
@@ -94,9 +93,9 @@ exports.normalizeType = function(type){
   return ~type.indexOf('/')
     ? acceptParams(type)
     : { value: mime.lookup(type), params: {} };
-};
+ };
 
-/**
+ /**
  * Normalize `types`, for example "html" becomes "text/html".
  *
  * @param {Array} types
@@ -112,9 +111,9 @@ exports.normalizeTypes = function(types){
   }
 
   return ret;
-};
+ };
 
-/**
+ /**
  * Generate Content-Disposition header appropriate for the filename.
  * non-ascii filenames are urlencoded and a filename* parameter is added
  *
@@ -126,7 +125,7 @@ exports.normalizeTypes = function(types){
 exports.contentDisposition = deprecate.function(contentDisposition,
   'utils.contentDisposition: use content-disposition npm module instead');
 
-/**
+ /**
  * Parse accept params `str` returning an
  * object with `.value`, `.quality` and `.params`.
  * also includes `.originalIndex` for stable sorting
@@ -150,9 +149,9 @@ function acceptParams(str, index) {
   }
 
   return ret;
-}
+ }
 
-/**
+ /**
  * Compile "etag" value to function.
  *
  * @param  {Boolean|String|Function} val
@@ -184,9 +183,9 @@ exports.compileETag = function(val) {
   }
 
   return fn;
-}
+ }
 
-/**
+ /**
  * Compile "query parser" value to function.
  *
  * @param  {String|Function} val
@@ -219,9 +218,9 @@ exports.compileQueryParser = function compileQueryParser(val) {
   }
 
   return fn;
-}
+ }
 
-/**
+ /**
  * Compile "proxy trust" value to function.
  *
  * @param  {Boolean|String|Number|Array|Function} val
@@ -248,9 +247,9 @@ exports.compileTrust = function(val) {
   }
 
   return proxyaddr.compile(val || []);
-}
+ }
 
-/**
+ /**
  * Set the charset in a given Content-Type string.
  *
  * @param {String} type
@@ -272,9 +271,9 @@ exports.setCharset = function setCharset(type, charset) {
 
   // format type
   return contentType.format(parsed);
-};
+ };
 
-/**
+ /**
  * Parse an extended query string with qs.
  *
  * @return {Object}
@@ -285,9 +284,9 @@ function parseExtendedQueryString(str) {
   return qs.parse(str, {
     allowPrototypes: true
   });
-}
+ }
 
-/**
+ /**
  * Return new empty object.
  *
  * @return {Object}
@@ -296,4 +295,4 @@ function parseExtendedQueryString(str) {
 
 function newObject() {
   return {};
-}
+ }

@@ -8,7 +8,6 @@
  */
 
 
-
 /**
  * Module dependencies.
  * @private
@@ -23,8 +22,8 @@ import * as merge from 'utils-merge';
 import * as setPrototypeOf from 'setprototypeof'
 import { resolve } from 'path';
 import * as debug from 'debug';
-import * as Static from 'serve-static';
 debug('express:application');
+import * as Static from 'serve-static';
 import * as deprecate from 'depd';
 deprecate('express');
 let slice = Array.prototype.slice;
@@ -536,18 +535,18 @@ export default class Application extends EventEmitter {
 			callback(err);
 		}
 	 }
-	// Methods.forEach(method => {
-	// 	this[method] = path => {
-	// 		if (method === 'get' && arguments.length === 1) {
-	// 			// app.get(setting)
-	// 			return this.set(path);
-	// 		}
+	Methods.forEach(method => {
+		this[method] = path => {
+			if (method === 'get' && arguments.length === 1) {
+				// app.get(setting)
+				return this.set(path);
+			}
 
-	// 		this.lazyrouter();
+			this.lazyrouter();
 
-	// 		var route = this._router.route(path);
-	// 		route[method].apply(route, slice.call(arguments, 1));
-	// 		return this;
-	// 	};
-	// });
+			var route = this._router.route(path);
+			route[method].apply(route, slice.call(arguments, 1));
+			return this;
+		};
+	 });
 }
