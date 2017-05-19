@@ -13,10 +13,14 @@ export function extractMS(ms: string): MatchString {
 	let path = [];
 	let params = [];
 	let segments = ms.split('/');
+	let paramFound = false;
 
 	for (let segment of segments) {
-		if (!segment.startsWith(':')) path.push(segment);
-		else params.push(segment.substring(1));
+		if (!paramFound && !segment.startsWith(':')) path.push(segment);
+		else {
+			paramFound = true;
+			params.push(segment);
+		}
 	}
 
 	return { path, params }
