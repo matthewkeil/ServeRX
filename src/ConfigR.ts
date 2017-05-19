@@ -11,6 +11,7 @@ export class ServeRConfig {
 	onListeningMessage: true;
 	onCloseMessage: true;
 	handleClientError: true;
+	allowedMethods: string[];
 	timeout: {
 		ms: 2000;
 		cb: (socket: net.Socket) => void;
@@ -49,7 +50,6 @@ export class HttpServeRConfig extends ServeRConfig {
 	enableCORS: true;
 	allowFaviconReq: false;
 	maxHeadersCount: 1000;
-	supportedMethods: string[];
 	cache: {
 		maxAge: number;
 		type: string; // default to 'public'
