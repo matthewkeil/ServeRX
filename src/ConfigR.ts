@@ -42,16 +42,14 @@ export class ServeRConfig {
 	}
 };
 
-export class SecureServeRConfig extends ServeRConfig {
-
-}
-
+export class SecureServeRConfig extends ServeRConfig {}
 
 export class HttpServeRConfig extends ServeRConfig {
 	allowUpgrade: true;
 	enableCORS: true;
 	allowFaviconReq: false;
 	maxHeadersCount: 1000;
+	supportedMethods: string[];
 	cache: {
 		maxAge: number;
 		type: string; // default to 'public'
@@ -73,9 +71,7 @@ export class HttpServeRConfig extends ServeRConfig {
 	};
 };
 
-export class HttpsServeRConfig extends HttpServeRConfig implements SecureServeRConfig {
-
-}
+export class HttpsServeRConfig extends HttpServeRConfig implements SecureServeRConfig {}
 
 export class ServeRxConfig<T> {
 	http: HttpServeRConfig;
