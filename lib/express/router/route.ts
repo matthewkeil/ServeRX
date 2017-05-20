@@ -40,7 +40,8 @@ const toString = Object.prototype.toString;
 export default class Route {
 	public path: any;
 	public stack: any;
-	public Route(path) {
+	public methods: any;
+	constructor(path) {
 		this.path = path;
 		this.stack = [];
 

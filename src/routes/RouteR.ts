@@ -99,14 +99,13 @@ export class RouteR {
 			return { matchString, methods, options, stack, nested };
 		};
 	}
-
+ 
 	private _buildRoutesObject(config: ServeRConfig): void {
-		const index = config.routes
-			|| Array.isArray(require('./routes').index)
-				? require('./routes').index
+		const index = config.routes || require('./routes/index.ts').index;
+		Array.isArray(index)
+				? this.routes = this._parseRoutes(index)
 				: console.error(`Route location not defined in config and we didn't find an array named "index" at routes/index.ts `);
-		this.routes = this._parseRoutes(index);
 	}
 
-	
+
 }

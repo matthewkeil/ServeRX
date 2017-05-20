@@ -1,13 +1,24 @@
 
 import * as http from 'http';
 import * as net from 'net';
-import { SocketR } from './SocketR';
+
+
+import { Subscriber } from 'rxjs/Subscriber';
+
+import { HttpEvent } from './servers/events';
+import { PoolCount } from './servers/PoolR';
 import { Route, METHOD, ROUTE_OPTION } from './routes/Route';
 
 export class ServeRConfig {
-	requestHandler: (socket__: SocketR) => void;
+	requestHandler: (socket__: net.Socket) => void;
 	name: 'ServeRx';
 	protocol: string;
+	env: {
+		HOST: 'localhost';
+		PORT: number;
+		NODE_ENV: 'development'; 
+	};
+	backlog: number;
 	handleCheckContinue: true;
 	onListeningMessage: true;
 	onCloseMessage: true;
@@ -18,11 +29,6 @@ export class ServeRConfig {
 	timeout: {
 		ms: 2000;
 		cb: (socket: net.Socket) => void;
-	};
-	env: {
-		HOST: 'localhost';
-		PORT: string | number;
-		NODE_ENV: 'development'; 
 	};
 	resources: {
 		auth:  { 

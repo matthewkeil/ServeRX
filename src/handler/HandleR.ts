@@ -12,9 +12,6 @@ import { ServeRxConfig, ServeRConfig } from './ConfigR';
 import { RequestR, IncomingReq } from './RequestR';
 import { RespondeR } from './RespondeR';
 
-export class PoolRx {
-
-}
 
 export enum SocketStatus {
 	new,
@@ -45,7 +42,7 @@ export interface SocketRxI {
 	isSecure(): boolean;
 }
 
-export class SocketR extends BehaviorSubject<SocketStatus> implements SocketRxI {
+export class HandleR extends BehaviorSubject<SocketStatus> implements SocketRxI {
 
 	socket: Socket;
 	req$: RequestR;
