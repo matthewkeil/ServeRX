@@ -19,6 +19,7 @@ export class ServeRConfig {
 		NODE_ENV: 'development'; 
 	};
 	backlog: number;
+	wantsPoolR: true;
 	handleCheckContinue: true;
 	onListeningMessage: true;
 	onCloseMessage: true;
