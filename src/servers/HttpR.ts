@@ -51,6 +51,7 @@ export class HttpR extends BehaviorSubject<ServeREvent> {
 	public protocol: string;
 	public upgrade$: UpgradeR;
 	private server: Server;
+	private server$: Subject<Handler>;
 	private server__: Subscription;
 	private pool$: PoolR;
 	
@@ -68,15 +69,15 @@ export class HttpR extends BehaviorSubject<ServeREvent> {
 			? this.pool$ = new PoolR
 			: this.pool$ = <Observer<HandleR>>{ next:()=> {}, error:()=>{}, complete:()=>{} }
 
-		this.server__ = Subject.create(this.pool$, this._buildServer())
-			.subscribe(
+		this.server$ = Subject.create(this.pool$, this._buildServer());
+		this.server__ = this.server$.subscribe(
 				(socket: HandleR) => {}, 
 				(err: Error) => { this._handle('server-fatal', err) },
 				() => { this._handle('server-fatal') }
 			);
 	 }
 
-	error() {}
+	
 	complete() {
 		this.pool$.complete();
 		this.server__.unsubscribe();
@@ -142,6 +143,7 @@ export class HttpR extends BehaviorSubject<ServeREvent> {
 			.merge(request$, error$, close$, upgrade$, clientError$, checkContinue$)
 	 };
 
+	error() {}
 	_handle(from: string, err?: Error) {}
 
 };
