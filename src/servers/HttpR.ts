@@ -31,8 +31,6 @@ import { PoolR, PoolCount, PoolEvent } from '../handlers/PoolR';
 import { UpgradeRequest, UpgradeR } from './../handlers/UpgradeR';
 
 
-
-
 export enum ServeREvent {
 	Starting,
 	Listening,
@@ -45,9 +43,6 @@ export enum ServeREvent {
 
 export class HttpR extends BehaviorSubject<ServeREvent> {
 
-	// public listening: boolean;
-	// public getConnections(cb: (err: Error, number: number)=>void): void {};
-	// public address(): { port: number, family: string, address: string } { return };
 	public protocol: string;
 	public upgrade$: UpgradeR;
 	private server: Server;
@@ -58,9 +53,7 @@ export class HttpR extends BehaviorSubject<ServeREvent> {
 	constructor(public config: HttpServeRConfig) {
 
 		super(ServeREvent.Starting);
-		
 		this.protocol = 'http';
-
 		this.config.allowUpgrade
 			? this.upgrade$ = new UpgradeR
 			: null;
@@ -71,13 +64,12 @@ export class HttpR extends BehaviorSubject<ServeREvent> {
 
 		this.server$ = Subject.create(this.pool$, this._buildServer());
 		this.server__ = this.server$.subscribe(
-				(socket: HandleR) => {}, 
-				(err: Error) => { this._handle('server-fatal', err) },
-				() => { this._handle('server-fatal') }
-			);
+			(socket: HandleR) => {}, 
+			(err: Error) => { this._handle('server-fatal', err) },
+			() => { this._handle('server-fatal') }
+		 );
 	 }
 
-	
 	complete() {
 		this.pool$.complete();
 		this.server__.unsubscribe();
@@ -145,5 +137,8 @@ export class HttpR extends BehaviorSubject<ServeREvent> {
 
 	error() {}
 	_handle(from: string, err?: Error) {}
-
 };
+
+	// public listening: boolean;
+	// public getConnections(cb: (err: Error, number: number)=>void): void {};
+	// public address(): { port: number, family: string, address: string } { return };
