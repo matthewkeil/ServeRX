@@ -1,6 +1,6 @@
 
 import * as http from 'http';
-import * as net from 'net';
+import { Socket }from 'net';
 
 
 import { Subscriber } from 'rxjs/Subscriber';
@@ -10,7 +10,7 @@ import { PoolCount } from './servers/PoolR';
 import { Route, METHOD, ROUTE_OPTION } from './routes/Route';
 
 export class ServeRConfig {
-	requestHandler: (socket__: net.Socket) => void;
+	requestHandler: (socket__: Socket) => void;
 	name: 'ServeRx';
 	protocol: string;
 	env: {
@@ -22,13 +22,12 @@ export class ServeRConfig {
 	handleCheckContinue: true;
 	onListeningMessage: true;
 	onCloseMessage: true;
-	handleClientError: true;
 	routes?: Route<any>[];
 	allowedMethods?: METHOD[];
 	allowedRouteOptions?: ROUTE_OPTION[];
 	timeout: {
 		ms: 2000;
-		cb: (socket: net.Socket) => void;
+		cb: (socket: Socket) => void;
 	};
 	resources: {
 		auth:  { 
@@ -59,6 +58,7 @@ export class HttpServeRConfig extends ServeRConfig {
 	enableCORS: true;
 	allowFaviconReq: false;
 	maxHeadersCount: 1000;
+	handleClientError: (err: Error, socket: Socket) => any;
 	cache: {
 		maxAge: number;
 		type: string; // default to 'public'

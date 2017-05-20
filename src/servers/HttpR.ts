@@ -1,13 +1,14 @@
 
+
 import { 
 	createServer,
 	Server,
 	IncomingMessage,
 	ServerResponse } from 'http';
-import * as net from 'net';
+import { Socket } from 'net';
 
 
-import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import { Subscriber } from 'rxjs/Subscriber';
@@ -20,95 +21,118 @@ import { BoundCallbackObservable } from 'rxjs/observable/BoundCallbackObservable
 
 import { HttpServeRConfig } from '../ConfigR';
 import { RequestR, IncomingReq } from '../messages/RequestR';
-import { HandleR } from '../handler/HandleR';
+import { HandleR } from '../handlers/HandleR';
 import { 
 	HttpEvent,
 	HttpSocketUpgrade, 
 	HttpClientError } from './events';
-import { PoolCount } from './PoolR';
+import { PoolR, PoolCount, PoolEvent } from '../handlers/PoolR';
+import { UpgradeRequest, UpgradeR } from './../handlers/UpgradeR';
 
 
-export class HttpR extends Subject<> {
 
+
+export enum ServeREvent {
+	Starting,
+	Listening,
+	ServerError,
+	ServerComplete,
+	PoolError,
+	PoolComplete,
+	UpgradeWaiting
+}
+
+export class HttpR extends BehaviorSubject<ServeREvent> {
+
+		// public listening: boolean;
+		// public getConnections(cb: (err: Error, number: number)=>void): void {};
+		// public address(): { port: number, family: string, address: string } { return };
+	public protocol: string;
+	public upgrader: UpgradeR;
 	private server: Server;
 	private server$: Observable<HttpEvent>;
 	private server__: Subscription;
+	private pool$: PoolR;
+	private pool__: Subscription;
 	
 	constructor(public config: HttpServeRConfig) {
-		super();
-		this.server$ = this._setListeners();
+		super(ServeREvent.Starting);
+		this.protocol = 'http';
+		this.server$ = this._buildServer();
 		this.server__ = this.server$.subscribe(
-			(event: HttpEvent) => {}, 
-			(err: Error) => {},
-			() => {}
-		);
+			(any: any) => {}, 
+			(err: Error) => { this._handle('server', err) },
+			() => { this._handle('server') }
+		 );
+		this.pool$ = new PoolR;
+		this.pool__= this.pool$.subscribe(
+			(event: PoolEvent) => {}, 
+			(err: Error) => { this._handle('pool', err) },
+			() => { this._handle('pool') }
+		 );;
+		if (this.config.allowUpgrade) this.upgrader = new UpgradeR;
 	}
 
-	_setListeners(): Observable<HttpEvent> {
+	_buildServer(): Observable<HttpEvent> {
 
-		let server = createServer();
-		server.maxHeadersCount = this.config.maxHeadersCount;
-		server.setTimeout(this.config.timeout.ms, this.config.timeout.cb);
-		server.timeout = this.config.timeout.ms;
+		this.server = createServer();
+		this.server.maxHeadersCount = this.config.maxHeadersCount;
+		this.server.setTimeout(this.config.timeout.ms, this.config.timeout.cb);
+		this.server.timeout = this.config.timeout.ms;
+
+		const request$ = FromEventObservable.call(this.server, 'request',
+			(req: IncomingMessage, res: ServerResponse) => {
+				let socket = new HandleR(this.protocol, this.config, req, res);
+				this.pool$.next(socket); 
+			}
+		 );
 		
-		const server$ = <Observable<HttpEvent>>BoundCallbackObservable.call(
-			server.listen(
+		const error$ = FromEventObservable.call(this.server, 'error',
+			(err: Error) => this._handle('server', err)
+		 );
+
+		const close$ = FromEventObservable.call(this.server, 'close', () => {
+			if (this.config.onCloseMessage) this.config.onClose();
+			this._handle('server');
+		 });
+
+		let checkContinue$, clientError$, upgrade$;
+		if (this.config.allowUpgrade) {
+			const upgrade$ = FromEventObservable.call(this.server, /(connect|upgrade)/,
+				(req: IncomingMessage, socket: Socket, head: Buffer) => {
+					this.upgrader.next({req, socket, head});
+			});
+		 }
+
+		if (this.config.handleClientError) {
+			const clientError$ = FromEventObservable.call(this.server, 'clientError', 
+				(err: Error, socket: Socket) => { 
+					this.config.handleClientError(err, socket);
+			});
+		 }
+		if (this.config.handleCheckContinue) {
+			const checkContinue$ = FromEventObservable.call(this.server, 'checkContinue',
+				(req: IncomingMessage, res: ServerResponse) => {
+					res.writeContinue();
+					this.server.emit('request', req, res);
+			});
+		 }
+
+		return BoundCallbackObservable.call(
+			this.server.listen(
 				this.config.env.PORT, 
 				this.config.env.HOST, 
 				this.config.backlog,
 			),
-			() => { 
-				if (this.config.onListeningMessage) {
-					this.config.onListening();
-			}}
-		);
-
-		const request$ = FromEventObservable.call(server, 'request',
-			(req: IncomingMessage, res: ServerResponse) => { 
-				if (this.config.requestHandler) {
-					let socket__ = new SocketR(config, 'http', req, res);
-				} else { 
-					res.statusCode = 500;
-					res.end({"message":"<h1>No Request Handler Found<h1>"}, 'utf8');
-				}
-		});
-			
-		const checkContinue$ = FromEventObservable.call(server, 'checkContinue',
-			(req: IncomingMessage, res: ServerResponse) => { 
-				if (this.config.http.handleCheckContinue) {
-					res.writeContinue();
-					_server.emit('request', req, res);
-				}
-		});
-
-		const connect$ = FromEventObservable.call(server, /(connect|upgrade)/,
-			(req: IncomingMessage, socket: net.Socket, head: Buffer) => {
-				if (this.config.http.allowUpgrade) { 
-					observer.next({req, socket, head});
-				}
-			});
-
-		const clientError$ = FromEventObservable.call(server, 'clientError', 
-			(err: Error, socket: net.Socket) => { 
-				if (this.config.http.handleClientError) {
-					observer.next({err, socket});
-				}
-		});
-
-		const error$ = FromEventObservable.call(server, 'error',
-			err => observer.error(err)
-		);
-
-		const close$ = FromEventObservable.call(server, 'close', () => {
-			_server.removeAllListeners();
-			if (this.config.http.onCloseMessage) {
-				this.config.onClose(); 
+			() => {
+				super.next(ServeREvent.Listening)
+				if (this.config.onListeningMessage) this.config.onListening();
 			}
-			observer.complete(); 
-		});
-
-		return merge.call(listening$, request$, checkContinue$, connect$, upgrade$, clientError$, error$, close$)
+		).merge(request$, error$, close$, upgrade$, checkContinue$, clientError$)
 	};
 
-		
+	_handle(from: string, err?: Error) {
+
+	}
+
 };

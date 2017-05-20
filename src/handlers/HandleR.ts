@@ -53,7 +53,12 @@ export class HandleR extends BehaviorSubject<SocketStatus> implements SocketRxI 
 	encoding?: string;
 	objectMode?: boolean;
 
-	constructor(public protocol: string, private config: ServeRConfig, private _req?: IncomingMessage) {
+	constructor(
+		public protocol: string, 
+		private config: ServeRConfig, 
+		private _req?: IncomingMessage,
+		private _res?: ServerResponse
+	) {
 		super(0)
 		if (_req) {
 			this.socket = _req.socket;
