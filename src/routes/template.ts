@@ -20,7 +20,7 @@ function postFooBarNoFixedParam(observer: RouteObserver<any>) {}
 
 const users = [
 	'users', 
-		['login', GET, login],
+		['login', POST, login],
 		['logout', logout],
 		[':id', GET, getUser],
 		[':id', DELETE, deleteUser],

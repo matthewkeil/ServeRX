@@ -2,7 +2,7 @@
 import * as http from 'http';
 import * as net from 'net';
 import { SocketR } from './SocketR';
-import { METHOD, ROUTE_OPTION } from './router/Routes';
+import { Route, METHOD, ROUTE_OPTION } from './routes/Route';
 
 export class ServeRConfig {
 	requestHandler: (socket__: SocketR) => void;
@@ -12,8 +12,9 @@ export class ServeRConfig {
 	onListeningMessage: true;
 	onCloseMessage: true;
 	handleClientError: true;
-	allowedMethods: METHOD[];
-	allowedRouteOptions: ROUTE_OPTION[];
+	routes?: Route<any>[];
+	allowedMethods?: METHOD[];
+	allowedRouteOptions?: ROUTE_OPTION[];
 	timeout: {
 		ms: 2000;
 		cb: (socket: net.Socket) => void;

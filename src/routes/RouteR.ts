@@ -1,32 +1,22 @@
 
-	import { MatchString, MSRegEx, extractMS } from './MatchString';
+import { MatchString, MSRegEx, extractMS } from './MatchString';
 import { RouteObserver, ObservableRoute } from './RouteObserver';
+import { Routes, Route, METHOD, ROUTE_OPTION } from './Route';
 import { RespondeR } from '../messages/RespondeR';
 import { ServeRConfig } from './../ConfigR';
 
 
-export type ROUTE_OPTION = 'protected' | 'internal';
+export class RouteR {
 
-export type METHOD = 'GET' | 'PUT' | 'POST' | 'PATCH' | 'DELETE' | 'HEAD' | 'CONNECT' | 'TRACE' | 'OPTIONS';
-
-export interface RouteI<T> {
-	matchString?: MatchString;
-	methods?: METHOD[];
-	options?: ROUTE_OPTION[];
-	stack: ObservableRoute<T>[];
-	nested?: RouteI<T>; 
-}
-
-export class Routes {
-
-	private buildRoutes: (...args: any[]) => RouteI<any>;
-	public routes: RouteI<any>;
+	public routes: Route<any>[];
+	private _parseRoutes: (...args: any[]) => Route<any>[];
 	
 	constructor(private _config: ServeRConfig) {
-		this.buildRoutes = this._buildRoutesFactory(_config);
+		this._parseRoutes = this._parseRoutesFunctionFactory(_config);
+		this._buildRoutesObject(this._config);
 	}
 
-	private _buildRoutesFactory(config: ServeRConfig): (...args: any[]) => RouteI<any> {
+	private _parseRoutesFunctionFactory(config: ServeRConfig): (...args: any[]) => Route<any>[] {
 
 		let ALLOWED_METHODS = <METHOD[]>[];
 		const VALID_METHODS = <METHOD[]>[
@@ -63,7 +53,7 @@ export class Routes {
 			}
 		} else ALLOWED_OPTIONS = VALID_OPTIONS;
 
-		return function _route(...args: any[]): RouteI<any> {
+		return function _parseRoutes(...args: any[]): Route<any>[] {
 			const METHODS = ALLOWED_METHODS;
 			const OPTIONS = ALLOWED_OPTIONS;
 
@@ -71,7 +61,7 @@ export class Routes {
 			let methods = <METHOD[]>[];
 			let options = <ROUTE_OPTION[]>[];
 			let stack = <ObservableRoute<any>[]>[];
-			let nested = <RouteI<any>>{}
+			let nested = <Route<any>>{}
 
 			for(let arg of args) {
 				if (typeof arg == 'string') {
@@ -96,7 +86,7 @@ export class Routes {
 						: console.error(`${arg} is not an allowed Method or Option nor a valid MatchString`);
 				}
 				if (Array.isArray(arg)) {
-					nested = _route(...arg);
+					nested = _parseRoutes(...arg);
 				}
 				if ((typeof arg) === 'function') {
 					if (((typeof (<RouteObserver<any>>arg.arguments[0]).next) === 'function')
@@ -109,4 +99,14 @@ export class Routes {
 			return { matchString, methods, options, stack, nested };
 		};
 	}
+
+	private _buildRoutesObject(config: ServeRConfig): void {
+		const index = config.routes
+			|| Array.isArray(require('./routes').index)
+				? require('./routes').index
+				: console.error(`Route location not defined in config and we didn't find an array named "index" at routes/index.ts `);
+		this.routes = this._parseRoutes(index);
+	}
+
+	
 }
