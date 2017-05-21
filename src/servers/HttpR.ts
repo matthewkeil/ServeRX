@@ -39,23 +39,24 @@ export enum ServeREvent {
 	PoolError,
 	PoolComplete,
 	UpgradeWaiting
-	}
+ }
 
 export class HttpR extends BehaviorSubject<ServeREvent> {
 
 	public protocol: string;
-	public upgrade$: UpgradeR;
-	private server: Server;
-	private server$: Subject<Handler>;
-	private server__: Subscription;
+	public upgrader$: UpgradeR;
 	private pool$: PoolR;
+	private server: Server;
+	private server$: Subject<HandleR>;
+	private server__: Subscription;
 	
 	constructor(public config: HttpServeRConfig) {
 
 		super(ServeREvent.Starting);
 		this.protocol = 'http';
+
 		this.config.allowUpgrade
-			? this.upgrade$ = new UpgradeR
+			? this.upgrader$ = new UpgradeR
 			: null;
 
 		this.config.wantsPoolR
@@ -65,13 +66,20 @@ export class HttpR extends BehaviorSubject<ServeREvent> {
 		this.server$ = Subject.create(this.pool$, this._buildServer());
 		this.server__ = this.server$.subscribe(
 			(socket: HandleR) => {}, 
-			(err: Error) => { this._handle('server-fatal', err) },
-			() => { this._handle('server-fatal') }
+			(err: Error) => { this._handleInternalErrClose('server-subscription', err) },
+			() => { this._handleInternalErrClose('server-subscription') }
 		 );
 	 }
 
+	error(err: Error) {
+		this.upgrader$ ? this.upgrader$.error(err) : null;
+		this.pool$ ? this.pool$.error(err) : null;
+		this.server$.error(err);
+	 }
+	
 	complete() {
-		this.pool$.complete();
+		this.upgrader$ ? this.upgrader$.complete() : null;
+		this.pool$ ? this.pool$.complete() : null;
 		this.server__.unsubscribe();
 	 }
 
@@ -81,28 +89,11 @@ export class HttpR extends BehaviorSubject<ServeREvent> {
 		this.server.maxHeadersCount = this.config.maxHeadersCount;
 		this.server.setTimeout(this.config.timeout.ms, this.config.timeout.cb);
 		this.server.timeout = this.config.timeout.ms;
-
-		const request$ = FromEventObservable.call(this.server, 'request',
-			(req: IncomingMessage, res: ServerResponse) => {
-				let socket = new HandleR(this.protocol, this.config, req, res);
-				this.server$.next(socket);
-		 });
-		
-		const error$ = FromEventObservable.call(this.server, 'error',
-			(err: Error) => this._handle('server', err)
-		 );
-
-		const close$ = FromEventObservable.call(this.server, 'close',
-			() => {
-				if (this.config.onCloseMessage) this.config.onClose();
-				this._handle('server');
-		 });
-
 		let upgrade$, clientError$, checkContinue$;
 		if (this.config.allowUpgrade) {
 			const upgrade$ = FromEventObservable.call(this.server, /(connect|upgrade)/,
 				(req: IncomingMessage, socket: Socket, head: Buffer) => {
-					this.upgrade$.next({req, socket, head});
+					this.upgrader$.next({req, socket, head});
 			});
 		 }
 
@@ -112,6 +103,7 @@ export class HttpR extends BehaviorSubject<ServeREvent> {
 					this.config.handleClientError(err, socket);
 			});
 		 }
+
 		if (this.config.handleCheckContinue) {
 			const checkContinue$ = FromEventObservable.call(this.server, 'checkContinue',
 				(req: IncomingMessage, res: ServerResponse) => {
@@ -119,6 +111,22 @@ export class HttpR extends BehaviorSubject<ServeREvent> {
 					this.server.emit('request', req, res);
 			});
 		 }
+		const request$ = FromEventObservable.call(this.server, 'request',
+			(req: IncomingMessage, res: ServerResponse) => {
+				let socket = new HandleR(this.protocol, this.config, req, res);
+				this.server$.next(socket);
+		 });
+		
+		const error$ = FromEventObservable.call(this.server, 'error',
+			(err: Error) => this._handleInternalErrClose('server-event', err)
+		 );
+
+		const close$ = FromEventObservable.call(this.server, 'close',
+			() => {
+				if (this.config.onCloseMessage) this.config.onClose();
+				this._handleInternalErrClose('server-event');
+		 });
+
 
 		return BoundCallbackObservable.call(
 			this.server.listen(
@@ -130,13 +138,12 @@ export class HttpR extends BehaviorSubject<ServeREvent> {
 				this.next(ServeREvent.Listening)
 				if (this.config.onListeningMessage) this.config.onListening();
 			}
-		).debounce(1000)
+		).debounce(500)
 			.retry(3)
 			.merge(request$, error$, close$, upgrade$, clientError$, checkContinue$)
 	 };
 
-	error() {}
-	_handle(from: string, err?: Error) {}
+	_handleInternalErrClose(from: string, err?: Error) {}
 };
 
 	// public listening: boolean;

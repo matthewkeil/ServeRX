@@ -49,6 +49,7 @@ export class HandleR extends BehaviorSubject<SocketStatus> implements SocketRxI 
 	res: RespondeR;
 	req__: Subscription;
 	res__: Subscription;
+	router: RouteR;
 	events__: Subscription;
 	encoding?: string;
 	objectMode?: boolean;
@@ -64,9 +65,10 @@ export class HandleR extends BehaviorSubject<SocketStatus> implements SocketRxI 
 			this.socket = _req.socket;
 			this.events__ = this._setListeners();
 			this.req$ = new RequestR(<any>this.config);
-			this.res = new RespondeR();
+			this.res = new RespondeR;
+			this.router = new RouteR;
 			this.req__ = this.req$.subscribe(request => 
-				this.req$.handler.next(request, this.res.runNext(request)));
+				this.req$.router.next(request, this.res.runNext(request)));
 			// this.res__ = this.res$.subscribe(status => this.updateStatus(status));
 		}
 	}
