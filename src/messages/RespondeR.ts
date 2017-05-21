@@ -5,14 +5,17 @@ import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { merge } from 'rxjs/operator/merge';
 import { FromEventObservable } from 'rxjs/observable/FromEventObservable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subject } from 'rxjs/Subject';
 
 
-import { IncomingReq, RequestR } from './RequestR';
+import { ServeRConfig, HttpServeRConfig, HttpsServeRConfig } from '../ConfigR';
+import { IncomingReq, RequesteR } from './RequesteR';
 import { Helpers } from './HelpeR';
 import { Header, HeadeR } from './headers/HeadeR';
-import { ServeRConfig } from './ConfigR';
 
+export enum ResponseStatus {
+
+ }
 
 export class OutgoingRes {
 
@@ -27,9 +30,9 @@ export class OutgoingRes {
 	// default headers
 
 	}
-};
+ }
 
-export class RespondeR extends OutgoingRes {
+export class RespondeR extends Subject<ResponseStatus> implements OutgoingRes {
 
 	private charsetRegExp = /;\s*charset\s*=/;
 	id: string;
@@ -40,25 +43,30 @@ export class RespondeR extends OutgoingRes {
 	content: ContentR;
 	body?: Buffer | string;
 	que?: [{
-		req: RequestR;
+		req: RequesteR;
 		res: OutgoingRes;
-	}]
+	 }]
 
-	constructor() {
-		super('ServeRx by Matthew Keil');
-	}
+	constructor(private _config: ServeRConfig) {
+		super();
+	 }
 
-	public runNext(req: RequestR): this {
+	public runNext(req: IncomingReq): this {
 		this.id = req.id;
 		this.que.push({req, res: new OutgoingRes(req.id)});
 		return this;
-	}
+	 }
 
-	public writeHead(statusCode: number, reasonPhrase?: string, headers?: any): void {}
+	public writeHead(statusCode: number, reasonPhrase?: string, headers?: any): void {
+
+	 }
 
 	public write(chunk: Buffer | string, encoding?: string, fd?: string): void {
-	} 
-	public end(chunk?: Buffer | string, encoding?: string): void {}
+
+	 } 
+	public end(chunk?: Buffer | string, encoding?: string): void {
+
+	 }
 
 	public json(obj: Object) {
 
@@ -70,14 +78,14 @@ export class RespondeR extends OutgoingRes {
 		}
 
 		return this.write(body);
-	};
+	 };
 
 	public sendStatus(code: number) {
 		let body = statuses[code]
 		this.statusCode = code;
 		ContentType.set('txt');
 		this.send(code);
-	};
+	 }
 
 	public writeBody(body: Buffer | string): void {
 		let chunk = body;
@@ -158,7 +166,7 @@ export class RespondeR extends OutgoingRes {
 			// respond
 			this.end(chunk, encoding);
 		}
-	};
+	 }
 
 }
 		/**

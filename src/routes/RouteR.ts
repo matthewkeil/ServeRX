@@ -1,20 +1,24 @@
+import { Subject } from './../../lib/rxjs/Subject';
+
+
 
 import { MatchString, MSRegEx, extractMS } from './MatchString';
 import { RouteObserver, ObservableRoute } from './RouteObserver';
 import { Routes, Route, METHOD, ROUTE_OPTION } from './Route';
-import { RespondeR } from '../messages/RespondeR';
+import { RespondeR, OutgoingRes } from '../messages/RespondeR';
 import { ServeRConfig } from './../ConfigR';
 
 
-export class RouteR {
+export class RouteR extends Subject<OutgoingRes> {
 
 	public routes: Route<any>[];
 	private _parseRoutes: (...args: any[]) => Route<any>[];
 	
 	constructor(private _config: ServeRConfig) {
+		super();
 		this._parseRoutes = this._parseRoutesFunctionFactory(_config);
 		this._buildRoutesObject(this._config);
-	}
+	 }
 
 	private _parseRoutesFunctionFactory(config: ServeRConfig): (...args: any[]) => Route<any>[] {
 
@@ -98,14 +102,17 @@ export class RouteR {
 
 			return { matchString, methods, options, stack, nested };
 		};
-	}
+	 }
  
 	private _buildRoutesObject(config: ServeRConfig): void {
 		const index = config.routes || require('./routes/index.ts').index;
 		Array.isArray(index)
 				? this.routes = this._parseRoutes(index)
 				: console.error(`Route location not defined in config and we didn't find an array named "index" at routes/index.ts `);
-	}
+	 }
+	
+	public handle(req: RequestR, res: RespondeR) {
 
+	 }
 
 }

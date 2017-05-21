@@ -47,7 +47,7 @@ export interface IncomingReq {
 		body?: string | Buffer;
 }
 
-export class RequestR extends Subject<RequestR> implements IncomingReq {
+export class RequesteR extends Subject<IncomingReq> implements IncomingReq {
 
 	headers: HeadeR;
 	content: ContentR;
@@ -60,7 +60,7 @@ export class RequestR extends Subject<RequestR> implements IncomingReq {
 		pathname?: string;
 		query?: {[param: string]: string};
 		hash?: string;
-	}
+	 }
 	httpVersion: string;
 	body?: string | Buffer;
 	certificate?: Object;
@@ -69,7 +69,7 @@ export class RequestR extends Subject<RequestR> implements IncomingReq {
 	constructor(config: HttpServeRConfig) {
 		super();
 		this.headers = new HeadeR(config);
-	}
+	 }
 
 	public parseReq(req: IncomingMessage): IncomingReq {
 
@@ -99,16 +99,16 @@ export class RequestR extends Subject<RequestR> implements IncomingReq {
 		this.content.next(this);
 
 		return  ( oldReq.id ? oldReq : null );
-	}
+	 }
 
-	public runNext(_req: IncomingMessage): void {
-				_req ? _req => {
+	public runNext(req: IncomingReq): void {
+		_req ? _req => {
 			this.parseReq(_req);
 			super.next(this);
 		 } : null;
 		this.que.push(this.parseReq(_req));
 		super.next(this);
-	}
+	 }
 
 	public parseData(buffer: any): void {
 		//  req line
@@ -120,11 +120,11 @@ export class RequestR extends Subject<RequestR> implements IncomingReq {
 		//    super.next(newReq)
 		// 2) if buffer if data pertaining 
 		//    search through que for reqId and handle whatever it is
-	}
+	 }
 
 	public parseBody(req: IncomingMessage): Buffer | string {
 		return '';
-	}
+	 }
 
 	public startHandlerTimer(handlerName): void {
 		/**
@@ -155,7 +155,7 @@ export class RequestR extends Subject<RequestR> implements IncomingReq {
 		// 			_dtraceId: this._dtraceId
 		// 	});
 		// });
-	}
+	 }
 
 	public endHandlerTimer(handlerName): void {
 		/**
@@ -189,6 +189,6 @@ export class RequestR extends Subject<RequestR> implements IncomingReq {
 		// 				_dtraceId: this._dtraceId
 		// 		});
 		// });
-	}
+	 }
 
 }
