@@ -10,7 +10,7 @@ import { Observable } from 'rxjs/Observable';
 import { FromEventObservable } from 'rxjs/observable/FromEventObservable';
 
 
-import { ServeRxConfig, ServeRConfig } from '../ConfigR';
+import { ServeRConfig } from '../ConfigR';
 import { RequesteR, IncomingReq } from '../messages/RequesteR';
 import { RespondeR, OutgoingRes, ResponseStatus } from '../messages/RespondeR';
 import { PoolR, PoolData } from './PoolR';
@@ -71,13 +71,16 @@ export class HandleR extends Subject<PoolData> implements HandleRI {
 			this.res = new RespondeR(this.config);
 			this.subscriptions.push(
 				this._buildSocketSubscription(),
-				this.req.subscribe(request => {
-					this.router.handle(this.req.runNext(request), this.res.runNext(request));
-				 }),
+				this.req.subscribe(
+					request => this.router.handle(
+							this.req, 
+						this.res.runNext(request))
+				 ),
 				this.res.subscribe(status => { 
 					this._updateStatus(status)
 				 })
 			 );
+			this.req.parseMessage(_req);
 		 }
 	 }
 
@@ -96,7 +99,7 @@ export class HandleR extends Subject<PoolData> implements HandleRI {
 		 };
 		let data$ = FromEventObservable.call(this.socket, 'data',
 		   // data should be parsed to see if its another request or being pushed to the pool
-			(chunk: Buffer | string) => { this._handleData(chunk) }
+			(chunk: Buffer | string) => { this._handleData$(chunk) }
 		 );
 		let error$ = FromEventObservable.call(this.socket, 'error',
 			(err: Error) => { this.error(err) }
@@ -111,19 +114,26 @@ export class HandleR extends Subject<PoolData> implements HandleRI {
 		
 	 }
 
-	private _handleData(chunk: SocketData) {
-
-	 }
-	next(data: PoolData): void {
+	private _handleData$(chunk: SocketData) {
 
 	 }
 
-	error(err: Error): void {
+	public imcoming(data: PoolData): void {
+
+	 }
+
+	public next(data: PoolData): void {
+
+	 }
+
+	public error(err: Error): void {
 
 	 }
 	
-	complete(): void { 
-		this.events__.unsubscribe(); 
+	public complete(): void { 
+		for (let sub of this.subscriptions) {
+			sub.unsubscribe(); 
+		}
 	 }
 
 }

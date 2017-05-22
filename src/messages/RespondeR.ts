@@ -36,14 +36,14 @@ export class RespondeR extends Subject<ResponseStatus> implements OutgoingRes {
 
 	private charsetRegExp = /;\s*charset\s*=/;
 	id: string;
+	headers: HeadeR;
+	content: ContentR;
 	date: Date;
 	statusCode: number;
 	statusMessage: string;
-	headers: HeadeR;
-	content: ContentR;
 	body?: Buffer | string;
 	que?: [{
-		req: RequesteR;
+		req: IncomingReq;
 		res: OutgoingRes;
 	 }]
 
@@ -53,6 +53,9 @@ export class RespondeR extends Subject<ResponseStatus> implements OutgoingRes {
 
 	public runNext(req: IncomingReq): this {
 		this.id = req.id;
+		this.headers.next(res);
+		this.content.next(res);
+		this.date = this.statusCode = this.statusMessage = this.body = this.que = undefined;
 		this.que.push({req, res: new OutgoingRes(req.id)});
 		return this;
 	 }

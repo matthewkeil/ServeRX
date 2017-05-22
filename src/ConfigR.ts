@@ -6,8 +6,8 @@ import { Socket }from 'net';
 import { Subscriber } from 'rxjs/Subscriber';
 
 import { HttpEvent } from './servers/events';
-import { PoolCount } from './servers/PoolR';
-import { Route, METHOD, ROUTE_OPTION } from './routes/Route';
+import { PoolCount } from './handlers/PoolR';
+	import { Route, METHOD, ROUTE_OPTION } from './routes/Route';
 
 export class ServeRConfig {
 	requestHandler: (socket__: Socket) => void;
@@ -60,10 +60,21 @@ export class HttpServeRConfig extends ServeRConfig {
 	allowFaviconReq: false;
 	maxHeadersCount: 1000;
 	handleClientError: (err: Error, socket: Socket) => any;
+	headers: {
+		accepts: true;
+		cors: true;
+		authorization: true;
+		cache: true;
+		content: true;
+		cookie: true;
+		client: true;
+		etag: true;
+		server: 'serveRx by Matthew Keil';
+	};
 	cache: {
 		maxAge: number;
 		type: string; // default to 'public'
-	};
+	 };
 	security: {
 		jwt: {
 			header: {
@@ -78,7 +89,7 @@ export class HttpServeRConfig extends ServeRConfig {
 				}; 
 			}; 
 		}; 
-	};
+	 };
 };
 
 export class HttpsServeRConfig extends HttpServeRConfig implements SecureServeRConfig {}

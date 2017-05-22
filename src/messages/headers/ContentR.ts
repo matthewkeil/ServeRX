@@ -20,7 +20,7 @@ export interface ContentRxI {
 	// isType(...types: string[]): boolean;
 }
 
-export class Content implements ContentRxI {
+export class ContentR implements ContentRxI {
 
 	length?: number;
 	types?: string[];

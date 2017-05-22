@@ -1,8 +1,10 @@
+// accept // no accept-'*'
+// charset;
+// encoding;
+// language;
+// ranges;
 
 import { IncomingMessage } from 'http';
-
-
-import { Observable } from 'rxjs/Observable';
 
 
 import { Content } from './Content';
@@ -26,7 +28,7 @@ export interface AcceptRxI {
 	setLanguages(...languages: string[]): Header[];
 }
 
-export class Accept implements AcceptRxI {
+export class AcceptR implements AcceptRxI {
 
 	public types?: string[];
 	public encodings?: string[];

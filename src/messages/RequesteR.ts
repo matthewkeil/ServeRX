@@ -6,22 +6,20 @@ import { IncomingMessage } from 'http';
 import { uuidv4 } from 'uuid/v4';
 
 import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import { merge } from 'rxjs/operator/merge';
-import { FromEventObservable } from 'rxjs/observable/FromEventObservable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+// import { Observable } from 'rxjs/Observable';
+// import { merge } from 'rxjs/operator/merge';
+// import { FromEventObservable } from 'rxjs/observable/FromEventObservable';
+// import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 
-import { ServeRxConfig, HttpServeRConfig, HttpsServeRConfig } from './ConfigR';
-import { SocketR } from './SocketR';
+import { HttpServeRConfig } from '../ConfigR';
 import { Header, HeadeR } from './headers/HeadeR';
 import { ContentR } from './headers/ContentR';
 import { AcceptR } from './headers/AcceptR';
-import { Helpers } from './HelpeR';
+import { Helpers } from '../HelpeR';
 
 export interface IncomingReq {
 		id: string;
-		config: HttpServeRConfig | HttpsServeRConfig;
 		method?: string;
 		url?: {
 			href?: string;
@@ -49,11 +47,9 @@ export interface IncomingReq {
 
 export class RequesteR extends Subject<IncomingReq> implements IncomingReq {
 
-	headers: HeadeR;
-	content: ContentR;
-	accept: AcceptR;
+	que?: IncomingReq[];
 	id: string;
-	config: HttpServeRConfig | HttpsServeRConfig;
+	headers: HeadeR;
 	method?: string;
 	url?: {
 		href?: string;
@@ -63,51 +59,35 @@ export class RequesteR extends Subject<IncomingReq> implements IncomingReq {
 	 }
 	httpVersion: string;
 	body?: string | Buffer;
-	certificate?: Object;
-	que?: IncomingReq[];
 
-	constructor(config: HttpServeRConfig) {
+	constructor(private config: HttpServeRConfig) {
 		super();
-		this.headers = new HeadeR(config);
+		this.headers = new HeadeR(this.config);
 	 }
 
-	public parseReq(req: IncomingMessage): IncomingReq {
+	public parseMessage(req: IncomingMessage): void {
 
-		// If this is not the first request save current data to push into an array below
-		let oldReq = <IncomingReq>{};
-		if (this.id) {
-			oldReq.id = this.id;
-			oldReq.method = this.method;
-			oldReq.url = this.url;
-			oldReq.httpVersion = this.httpVersion;
-			oldReq.headers.list = this.headers.list;
-			let { types: contentTypes, length } = this.content;
-			let { types: acceptTypes, encodings, charsets, languages } = this.accept
-			oldReq.body = this.body;
-			Object.assign(oldReq, { contentTypes, length, acceptTypes, encodings, charsets, languages });
-		}
+		let thisReq = <IncomingReq>{};
+		thisReq.id = this.id = uuidv4();
+		thisReq.method = this.method = req.method.toUpperCase() || 'GET';
+		thisReq.url = this.url = Url.parse(req.url, true);
+		thisReq.httpVersion = this.httpVersion = req.httpVersion;
 		
-		// Build current RequestRx values from IncomingMessage so when
-		// RequestRx is passed to Handler it has nextReq's values
-		this.id = uuidv4();
-		this.method = req.method.toUpperCase() || 'GET';
-		this.url = Url.parse(req.url, true);
-		this.httpVersion = req.httpVersion;
-		this.body = this.parseBody(req);
-		this.headers.next(req);
-		this.accept.next(this);
-		this.content.next(this);
+		this.headers.getFrom(req);
+		thisReq.headers = this.headers;
+		for (let name in Object.getOwnPropertyNames(this.headers)) if(
+			name !== 'que' &&
+			name !== 'id' &&
+			name !== 'headers' &&
+			name !== 'method' &&
+			name !== 'url' &&
+			name !== 'httpVersion' &&
+			name !== 'body') Object.assign(this, name);
 
-		return  ( oldReq.id ? oldReq : null );
-	 }
-
-	public runNext(req: IncomingReq): void {
-		_req ? _req => {
-			this.parseReq(_req);
-			super.next(this);
-		 } : null;
-		this.que.push(this.parseReq(_req));
-		super.next(this);
+		thisReq.body = this.body = this.parseBody(req);
+		
+		this.que.push(thisReq);
+		this.next(thisReq);
 	 }
 
 	public parseData(buffer: any): void {
