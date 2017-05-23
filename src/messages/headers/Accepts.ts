@@ -8,38 +8,23 @@ import { IncomingMessage } from 'http';
 
 
 import { Content } from './Content';
-import { Header, HeadeRx } from '../HeadeRx';
+	import { Header, HeadeRx } from '../HeadeRx';
 import { IncomingReq, RequestRx } from '../RequestRx';
 
 
-export interface AcceptRxI {
-	types?: string[];
-	encodings?: string[];
-	charsets?: string[];
-	languages?: string[];
-	get(req: RequestRx): void;
-	getTypes(req: RequestRx): void;
-	getEncoding(req: RequestRx): void;
-	getCharset(req: RequestRx): void;
-	getLanguages(req: RequestRx): void;
-	setTypes(...types: string[]): Header[];
-	setEncodings(...encodings: string[]): Header[];
-	setCharsets(...charsets: string[]): Header[];
-	setLanguages(...languages: string[]): Header[];
-}
 
-export class AcceptR implements AcceptRxI {
+export class Accepts {
 
 	public types?: string[];
 	public encodings?: string[];
 	public charsets?: string[];
 	public languages?: string[];
 	
-	constructor(req?: RequestRx) {
+	constructor(config?: HttpServeRConfig) {
 		if (req) this.get(req);
 	}
 
-	public get(req: RequestRx): void {
+	public getAccepts(list: Header[]): void {
 		this.getTypes(req);
 		this.getEncoding(req);
 		this.getCharset(req);

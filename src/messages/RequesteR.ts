@@ -15,7 +15,7 @@ import { Subject } from 'rxjs/Subject';
 import { HttpServeRConfig } from '../ConfigR';
 import { Header, HeadeR } from './headers/HeadeR';
 import { ContentR } from './headers/ContentR';
-import { AcceptR } from './headers/AcceptR';
+import { Accepts } from './headers/Accepts';
 import { Helpers } from '../HelpeR';
 
 export interface IncomingReq {
@@ -73,7 +73,7 @@ export class RequesteR extends Subject<IncomingReq> implements IncomingReq {
 		thisReq.url = this.url = Url.parse(req.url, true);
 		thisReq.httpVersion = this.httpVersion = req.httpVersion;
 		
-		this.headers.getFrom(req);
+		this.headers.extractFrom(req);
 		thisReq.headers = this.headers;
 		for (let name in Object.getOwnPropertyNames(this.headers)) if(
 			name !== 'que' &&

@@ -69,6 +69,7 @@ export class HttpServeRConfig extends ServeRConfig {
 		cookie: true;
 		client: true;
 		etag: true;
+		dnt: true;
 		server: 'serveRx by Matthew Keil';
 	};
 	cache: {
