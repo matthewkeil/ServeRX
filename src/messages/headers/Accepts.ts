@@ -7,154 +7,125 @@
 import { IncomingMessage } from 'http';
 
 
-import { Content } from './Content';
-	import { Header, HeadeRx } from '../HeadeRx';
-import { IncomingReq, RequestRx } from '../RequestRx';
+import { HttpServeRConfig } from '../../ConfigR';
+import { RawHeader, Header } from './HeadeR';
 
 
+export type AcceptType = {
+	mime: string;
+	subType?: string;
+	q?: number;
+ }
+	
+export type AcceptCharset = {
+	charset: string;
+	q?: number;
+ }
+
+export type Directive = 
+	'gzip' | 
+	'compress' | 
+	'deflate' | 
+	'br' | 
+	'identity';
+	
+export type AcceptEncoding = {
+	directive: Directive;
+	q?: number;
+ }
+
+export type AcceptLanguage = {
+	language: string;
+	locale?: string;
+	q?: number;
+ }
 
 export class Accepts {
 
-	public types?: string[];
-	public encodings?: string[];
-	public charsets?: string[];
-	public languages?: string[];
+	public type?: Header<AcceptType>;
+	public charset?: Header<AcceptCharset>;
+	public encoding?: Header<AcceptEncoding>;
+	public language?: Header<AcceptLanguage>;
 	
 	constructor(config?: HttpServeRConfig) {
-		if (req) this.get(req);
-	}
+		if (config.headers.accepts.charsets) this.charset = <AcceptCharsetHeader>{};
+		if (config.headers.accepts.encodings) this.encoding = <AcceptEncodingHeader>{};
+		if (config.headers.accepts.languages) this.language = <AcceptLanguageHeader>{};
+		if (config.headers.accepts.types) this.type = <AcceptTypeHeader>{};
+	 }
 
-	public getAccepts(list: Header[]): void {
-		this.getTypes(req);
-		this.getEncoding(req);
-		this.getCharset(req);
-		this.getLanguages(req);
-	}
+	public getAccepts(headers: RawHeader[]): void {
+		if (this.charsets) this.getCharset(headers);
+		if (this.encodings) this.getEncoding(headers);
+		if (this.languages) this.getLanguages(headers);
+		if (this.types) this.getTypes(headers);
+	 }
 
-	public getTypes(req: RequestRx): void {}
-	public getEncoding(req: RequestRx): void {}
-	public getCharset(req: RequestRx): void {}
-	public getLanguages(req: RequestRx): void {}
+	public getTypes(headers: RawHeader[]): void {
+		let typeHeader = <Header<AcceptType>>{};
+		for (let name in headers) if(name === 'accept') {
+			let values = headers[name].value.split(',');
+			values.forEach(type => {
+				type = type.trim();
+				let values = type.split(';');
+				let mime = values[0].split('/');
+				let q = +values[1];
+				typeHeader.value.push({mime: mime[0], subType: mime[1], q})
+			 });
+		 }
+		this.type = typeHeader;
+	 }
 
-}
+	public getEncoding(headers: RawHeader[]): void {
+		let encodingHeader = <Header<AcceptEncoding>>{};
+		for (let name in headers) if(name === 'acceptEncoding') {
+			let values = headers[name].value.split(',');
+			values.forEach(enc => {
+				enc = enc.trim();
+				let values = enc.split(';');
+				if(values[0] === 'gzip' ||
+					values[0] === 'compress' ||
+					values[0] === 'deflate' ||
+					values[0] === 'br' ||
+					values[0] === 'identity' ||
+					values[0] === '*') {
+						let directive = <Directive>values[0];
+						let q = +values[1];
+						encodingHeader.value.push({directive, q})
+					}
+			 });
+		 }
+		this.encoding = encodingHeader;
+	 }
 
+	public getCharset(headers: RawHeader[]): void {
+		let charsetHeader = <Header<AcceptCharset>>{};
+		for (let name in headers) if(name === 'acceptCharset') {
+			let values = headers[name].value.split(',');
+			values.forEach(set => {
+				set = set.trim();
+				let values = set.split(';');
+				let charset = values[0];
+				let q = +values[1];
+				charsetHeader.value.push({charset, q})
+			 });
+		 }
+		this.charset = charsetHeader;
+	 }
 
-
-	// public type(...type: string[]): string[] {
-	// 	/**
-	// 	 * To do: update docs.
-	// 	 *
-	// 	 * Check if the given `type(s)` is acceptable, returning
-	// 	 * the best match when true, otherwise `undefined`, in which
-	// 	 * case you should respond with 406 "Not Acceptable".
-	// 	 *
-	// 	 * The `type` value may be a single MIME type string
-	// 	 * such as "application/json", an extension name
-	// 	 * such as "json", a comma-delimited list such as "json, html, text/plain",
-	// 	 * an argument list such as `"json", "html", "text/plain"`,
-	// 	 * or an array `["json", "html", "text/plain"]`. When a list
-	// 	 * or array is given, the _best_ match, if any is returned.
-	// 	 *
-	// 	 * Examples:
-	// 	 *
-	// 	 *     // Accept: text/html
-	// 	 *     req.accepts('html');
-	// 	 *     // => "html"
-	// 	 *
-	// 	 *     // Accept: text/*, application/json
-	// 	 *     req.accepts('html');
-	// 	 *     // => "html"
-	// 	 *     req.accepts('text/html');
-	// 	 *     // => "text/html"
-	// 	 *     req.accepts('json, text');
-	// 	 *     // => "json"
-	// 	 *     req.accepts('application/json');
-	// 	 *     // => "application/json"
-	// 	 *
-	// 	 *     // Accept: text/*, application/json
-	// 	 *     req.accepts('image/png');
-	// 	 *     req.accepts('png');
-	// 	 *     // => undefined
-	// 	 *
-	// 	 *     // Accept: text/*;q=.5, application/json
-	// 	 *     req.accepts(['html', 'json']);
-	// 	 *     req.accepts('html', 'json');
-	// 	 *     req.accepts('html, json');
-	// 	 *     // => "json"
-	// 	 *
-	// 	 * @param {String|Array} type(s)
-	// 	 * @return {String|Array|Boolean}
-	// 	 * @public
-	// 	 */
-
-	// 	req.accepts = function(){
-	// 	var accept = accepts(this);
-	// 	return accept.types.apply(accept, arguments);
-	// 	};
-		
-		publuc accepts(types: string[]) {
-
-
-
-			negotiator(this);
-
-			return (this._negotiator.preferredMediaType(types));
-		};
-	}
-	public encoding(...encoding: string[]): string[] {
-		/**
-		 * Check if the given `encoding`s are accepted.
-		 *
-		 * @param {String} ...encoding
-		 * @return {String|Array}
-		 * @public
-		 */
-
-		req.acceptsEncodings = function(){
-		var accept = accepts(this);
-		return accept.encodings.apply(accept, arguments);
-		}
-		Request.prototype.acceptsEncoding = function acceptsEncoding(types) {
-			if (typeof (types) === 'string') {
-				types = [types];
-			}
-
-			assert.arrayOfString(types, 'types');
-
-			negotiator(this);
-
-			return (this._negotiator.preferredEncoding(types));
-		};
-	}
-	public charset(...charsets: string[]): string[] {
-		/**
-		 * Check if the given `charset`s are acceptable,
-		 * otherwise you should respond with 406 "Not Acceptable".
-		 *
-		 * @param {String} ...charset
-		 * @return {String|Array}
-		 * @public
-		 */
-
-		req.acceptsCharsets = function(){
-		var accept = accepts(this);
-		return accept.charsets.apply(accept, arguments);
-		};
-	}
-	public language(...languages: string[]): string[] {
-		/**
-		 * Check if the given `lang`s are acceptable,
-		 * otherwise you should respond with 406 "Not Acceptable".
-		 *
-		 * @param {String} ...lang
-		 * @return {String|Array}
-		 * @public
-		 */
-
-		req.acceptsLanguages = function(){
-		var accept = accepts(this);
-		return accept.languages.apply(accept, arguments);
-		};
-	}
+	public getLanguage(headers: RawHeader[]): void {
+		let langHeader = <Header<AcceptLanguage>>{};
+		for (let name in headers) if(name === 'acceptLanguage') {
+			let values = headers[name].value.split(',');
+			values.forEach(lang => {
+				lang = lang.trim();
+				let values = lang.split(';');
+				let language = values[0].split('-');
+				let q = +values[1];
+				langHeader.value.push({language: language[0], locale: language[1], q})
+			 });
+		 }
+		this.language = langHeader;
+	 }
 
 }

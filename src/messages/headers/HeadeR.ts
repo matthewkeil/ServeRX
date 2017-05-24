@@ -52,14 +52,17 @@ export function toKebabCase(name: string, upperCase: boolean = true): string {
 	return newName;
  }
 
-
-export type Header = {[name: string]: string[]};
-
 export type Connection = 'keep-alive' | 'close'; // comma separated list if transmission artifacts remain
+export type RawHeader = {[name: string]: string};
+export class Header<T> {
+
+	name: string;
+	value: T[];
+ }
 
 export class HeadeR {
 
-	list: Header[];
+	raw?: RawHeader[];
 	Accepts: Accepts;
 	Authorization: Authorization;
 	Cache: Cache;
@@ -102,10 +105,10 @@ export class HeadeR {
 		if (config.headers.authorization) this.Authorization = new Authorization(config);
 	 }
 
-	public extractFrom(req: IncomingMessage): void {
+	public getFrom(req: IncomingMessage): void {
 		Object.keys(req.headers).forEach(key => {
 			toCamelCase(key);
-			this.list.push({key: req.headers[key]})
+			this.raw.push({key: req.headers[key]})
 		 });
 		['Accepts', 'Authorization', 'Cache', 'Content', 'Cookie', 'Cors', 'Client',
 		'Etag', 'Dnt'].forEach(category => {

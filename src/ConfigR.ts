@@ -13,8 +13,8 @@ export class ServeRConfig {
 	requestHandler: (socket__: Socket) => void;
 	name: 'ServeRx';
 	protocol: string;
-	env: {
 		HOST: 'localhost';
+	env: {
 		PORT: number;
 		NODE_ENV: 'development'; 
 	};
@@ -61,7 +61,12 @@ export class HttpServeRConfig extends ServeRConfig {
 	maxHeadersCount: 1000;
 	handleClientError: (err: Error, socket: Socket) => any;
 	headers: {
-		accepts: true;
+		accepts: {
+			charsets: true;
+			encodings: true;
+			languages: true;
+			types: true;
+		 }
 		cors: true;
 		authorization: true;
 		cache: true;
