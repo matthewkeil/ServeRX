@@ -48,22 +48,22 @@ export class Accepts {
 	public language?: Header<AcceptLanguage>;
 	
 	constructor(config?: HttpServeRConfig) {
-		if (config.headers.accepts.charsets) this.charset = <AcceptCharsetHeader>{};
-		if (config.headers.accepts.encodings) this.encoding = <AcceptEncodingHeader>{};
-		if (config.headers.accepts.languages) this.language = <AcceptLanguageHeader>{};
-		if (config.headers.accepts.types) this.type = <AcceptTypeHeader>{};
-	 }
+		if (config.headers.accepts.charsets) this.charset = <Header<AcceptCharset>>{};
+		if (config.headers.accepts.encodings) this.encoding = <Header<AcceptEncoding>>{};
+		if (config.headers.accepts.languages) this.language = <Header<AcceptLanguage>>{};
+		if (config.headers.accepts.types) this.type = <Header<AcceptType>>{};
+	}
 
 	public getAccepts(headers: RawHeader[]): void {
-		if (this.charsets) this.getCharset(headers);
-		if (this.encodings) this.getEncoding(headers);
-		if (this.languages) this.getLanguages(headers);
-		if (this.types) this.getTypes(headers);
+		if (this.charset) this.getCharset(headers);
+		if (this.encoding) this.getEncoding(headers);
+		if (this.language) this.getLanguage(headers);
+		if (this.type) this.getType(headers);
 	 }
 
-	public getTypes(headers: RawHeader[]): void {
+	public getType(headers: RawHeader[]): void {
 		let typeHeader = <Header<AcceptType>>{};
-		for (let name in headers) if(name === 'accept') {
+		for (let name in headers) if (name === 'accept') {
 			let values = headers[name].value.split(',');
 			values.forEach(type => {
 				type = type.trim();
@@ -71,10 +71,10 @@ export class Accepts {
 				let mime = values[0].split('/');
 				let q = +values[1];
 				typeHeader.value.push({mime: mime[0], subType: mime[1], q})
-			 });
-		 }
+			});
+		}
 		this.type = typeHeader;
-	 }
+	}
 
 	public getEncoding(headers: RawHeader[]): void {
 		let encodingHeader = <Header<AcceptEncoding>>{};

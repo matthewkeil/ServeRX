@@ -1,12 +1,12 @@
 
 
 // import { Header, HeadeRx } from './HeadeRx';
-import { RequestRx } from './RequestRx';
+import { RequesteR } from '../RequesteR';
 
 
 export class Cache {
 
-	static setNo(req: RequestRx): RequestRx {
+	static setNo(req: RequesteR): RequestRx {
 
 		if (req.httpVersion === '1.1') {
 			req.headers.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -20,7 +20,7 @@ export class Cache {
 
 	};	
 
-	static set(req: RequestRx): RequestRx {
+	static set(req: RequesteR): RequestRx {
 
 		let type = req.config.cache.type + ', max-age=' + req.config.cache.maxAge; 
 		

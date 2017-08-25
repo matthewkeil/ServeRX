@@ -14,7 +14,7 @@ import { merge } from 'rxjs/operator/merge';
 import * as Store from '@ngrx/store';
 
 import { ServeRxConfig } from './ConfigR';
-import { RequestR } from './RequestR';
+import { RequestR } from './messages/RequestR';
 
 
 

@@ -24,25 +24,34 @@ import { Dnt } from './Dnt';
 // User-Agent figures out what browser and device are being used
 
 
-export const camelCase = /^[a-z0-9]*([A-Z][a-z0-9$]*)*$/;
-export function toCamelCase(name: string): string {
-	
-	let words;
-	if (camelCase.test(name)) return name;
-	else words = name.split(/-_\s/);
-	
-	words.forEach(name => name = name[0].toUpperCase() + name.substr(1).toLowerCase());
-	let newName = words.join();
-	
-	return newName[0].toLowerCase() + newName.substr(1);
- }
 
-export const kebabCase = /^([A-Z][a-z0-9]*)-([A-Z][a-z0-9]*)*$/;
+// toCamelCase() returns a string, provided in any case format, in camel case format with
+// the first word all lower cased and subsequent words with the first letter capitalized
+export const camelCase = /^[a-z0-9]*([A-Z][a-z0-9$]*)*$/;
+
+export function toCamelCase(name: string): string {
+	if (camelCase.test(name)) return name;
+	else {
+		let newName: string;
+		let words = name.split(/-_\s/);
+		words.forEach(word => newName.concat(word[0].toUpperCase(), word.substr(1).toLowerCase()));
+		newName[0].toLowerCase();
+		return newName;
+	}
+}
+
+// toKebabCase() returns a string, provided in any case format, in kebab case format. The second
+// argument can be provided to stipulate whether you would like the first letter of each word
+// to be returned in upper or lower case.  Uppercase is the default. Leading and trailing '-'
+// will be stripped.
+
+export const lowerKebabCase = /^([a-z][a-zA-Z0-9]*)(-[a-z0-9][a-zA-Z0-9]*)*$/;
+export const upperKebabCase = /^([A-Z][a-zA-Z0-9]*)(-[A-Z0-9][a-zA-Z0-9]*)*$/;
+
 export function toKebabCase(name: string, upperCase: boolean = true): string {
-	
-	let words;
 	if (kebabCase.test(name)) return name;
-	else words = name.split(/([A-Z]|[-_0-9\s]*)/);
+	else {
+		let words = name.split(/([A-Z]|[-_0-9\s]*)/);
 	
 	words.forEach(name => name = 
 		upperCase ? name[0].toUpperCase() : name[0].toLowerCase()
@@ -50,19 +59,21 @@ export function toKebabCase(name: string, upperCase: boolean = true): string {
 	let newName = words.join('-');
 	
 	return newName;
- }
+}
 
-export type Connection = 'keep-alive' | 'close'; // comma separated list if transmission artifacts remain
-export type RawHeader = {[name: string]: string};
+// RawHeaders is the Node provided header object type
+export type RawHeader = {[name: string]: string[]};
+
+// Header is a generic header type. Allows for each header to have its own type
 export class Header<T> {
-
 	name: string;
 	value: T[];
  }
 
-export class HeadeR {
+export class Headers {
 
-	raw?: RawHeader[];
+	raw?: RawHeader;
+
 	Accepts: Accepts;
 	Authorization: Authorization;
 	Cache: Cache;
@@ -73,24 +84,24 @@ export class HeadeR {
 	Etag: Etag;
 	Dnt: Dnt;
 
-		host: string;
-		date: string;
-		referer: string;
-		location: string;
-		server: string;
-		connection: Connection;
-		keepAlive: string;
-		from: string; // user-agent for contact info ie owner of a robot crawler
-		allow; // This header must be sent if the server responds with a 405 Method Not Allowed status code to indicate which request methods can be used. An empty Allow header indicates that the resource allows no request methods, which might occur temporarily for a given resource, for example.
+	host: string;
+	date: string;
+	referer: string;
+	location: string;
+	server: string;
+	connection: Connection;
+	keepAlive: string;
+	from: string; // user-agent for contact info ie owner of a robot crawler
+	allow; // This header must be sent if the server responds with a 405 Method Not Allowed status code to indicate which request methods can be used. An empty Allow header indicates that the resource allows no request methods, which might occur temporarily for a given resource, for example.
 
 
 	// templates
-		// proxies;
-		
-		//  Server Actions will set these note* not sure whether to put login with headers or in general server files
-		// contentDisposition;
-		// retryAfter;
-		// expect;
+	// proxies;
+	
+	//  Server Actions will set these note* not sure whether to put login with headers or in general server files
+	// contentDisposition;
+	// retryAfter;
+	// expect;
 
 
 	constructor(config?: HttpServeRConfig) {
@@ -103,57 +114,73 @@ export class HeadeR {
 		if (config.headers.accepts) this.Accepts = new Accepts(config);
 		if (config.headers.content) this.Content = new Content(config);
 		if (config.headers.authorization) this.Authorization = new Authorization(config);
-	 }
+	}
+
+	// getFrom() converts Node provided raw headers into ServeRx header format for intellisense usability
+	// All names are converted to camel case and values are split and pushed into an array. Node provided 
+	// object name/value pairs are segregated into applicable header categories.
+	//
+	// https://nodejs.org/dist/latest-v8.x/docs/api/http.html#http_message_headers
 
 	public getFrom(req: IncomingMessage): void {
 		Object.keys(req.headers).forEach(key => {
-			toCamelCase(key);
-			this.raw.push({key: req.headers[key]})
-		 });
+			let name = toCamelCase(key);
+			let value: string[];
+			// Check for an array of values and if not an array split on the ',' and push values into array
+			// Node already checks for duplicate values hence no need to check again 
+			Array.isArray(req.headers[key]) ?
+				(<string[]>req.headers[key]).forEach(val => value.push(val)) :
+				(<string>req.headers[key]).split(',').forEach(val => value.push(val));
+			Object.assign(this.raw, {name: value})
+		});
 		['Accepts', 'Authorization', 'Cache', 'Content', 'Cookie', 'Cors', 'Client',
 		'Etag', 'Dnt'].forEach(category => {
 			if (this[category]) {
-				this[category]['get' + category](this.list);
+				this[category]['get' + category](this.raw);
 				for (let prop of Object.getOwnPropertyNames(this[category])) {
-					Object.assign(this, prop);
+					if (typeof this[category][prop] !== 'function') {
+						Object.assign(
+							this[category.toLowerCase()],
+							this[category][prop]);
+					 }
 			 	 }
 			 }
 		 });
 	 }
 
-	public getHeader(name: string): Header {
+	public findRaw(name: string): Header<any> {
 		name = toCamelCase(name);
-		if (name === 'referer' || name ==='referrer') name = 'referer';
-		let value = this.list[name];
+		if (name === 'referer' || name === 'referrer') name = 'referer';
+		let value = this.raw[name];
 		name = toKebabCase(name);
-		return { name: this.list[name] };
+
+		return { name: this.list[name], value };
 	 }
 
-	public setHeader(name: string, value: string): this {
-		
-		name = toCamelCase(name);
-		if (name === 'referer' || name ==='referrer') name = 'referer';
-		this.list[name] = value;
-		return this;
-	 }
-
-	public getHeaders(...names: string[]): Header[] {
-
+	 
+	public find(...names: string[]): Header[] {
 		let headers = [];
-
 		for (let name of names) {
 			name = toCamelCase(name);
 			if (name === 'referer' || name ==='referrer') name = 'referer';
 			if(this.list[name]) {
 				name = toKebabCase(name);
 				headers.push({name: this.list[name]})
-			 }
-		 }
+			}
+		}
 		if (!names) headers = this.list;
 		
 		return headers;
-	 }
-	
+	}
+		
+	public set(name: string, value: string): this {
+		name = toCamelCase(name);
+		if (name === 'referer' || name ==='referrer') name = 'referer';
+		this.list[name] = value;
+
+		return this;
+	}
+
 	public setHeaders(headers: Header[]): this {
 		for (let name in headers) {
 			name = toCamelCase(name);
@@ -162,22 +189,21 @@ export class HeadeR {
 			Object.assign(this.list, {name: value});
 		}
 		return this;
-	 }
+	}
 
 	public appendHeader(name: string, ...args: string[]): this {
-		
 		let append = Array.isArray(args) ? args : [args];
-
 		let header = this.getHeader(toCamelCase(name));
+
 		if (header) for(let arg of append) header.value.push(arg);
 		else header.value = append;
 
 		this.list[name] = header.value;
+		
 		return this;
 	 }
 
 	public addLink(links: any): this {
-
 		let formatedLinks = '';
 		formatedLinks.concat((this.getHeader('Link') + ', ') || '');
 
@@ -186,25 +212,29 @@ export class HeadeR {
 		}
 		
 		Object.assign(this.list, {'Link': formatedLinks.substr(0, formatedLinks.length - 2)});
+
 		return this;
-	 }
+	}
 
 	public isChunked(): boolean {
-
 		return (this.getHeader('transfer-encoding').value.join() === 'chunked');
-	 }
+	}
 
 	public isKeepAlive(version: string): boolean {
-
 		if (this.list['connection'] === /keep-alive/) {
 			return true
 		} else {
 			version === '1.0' ? false : true;
 		}
 
-	 }
+	}
 
 }
+
+
+
+
+export type Connection = 'keep-alive' | 'close'; // comma separated list if transmission artifacts remain
 
 	content: ContentR;
 	accept: AcceptR;

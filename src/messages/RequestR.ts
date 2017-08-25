@@ -30,7 +30,7 @@ export interface IncomingReq {
 		httpVersion?: string;
 		certificate?: Object;  // tlsSocket.getPeerCertificate(detailed?: boolean)
 		headers?: {
-			list: Header[];
+			list: Header<any>[];
 		};
 		accept?: {
 			types?: string[];
@@ -45,7 +45,7 @@ export interface IncomingReq {
 		body?: string | Buffer;
 }
 
-export class RequesteR extends Subject<IncomingReq> implements IncomingReq {
+export class RequestR extends Subject<IncomingReq> implements IncomingReq {
 
 	que?: IncomingReq[];
 	id: string;
@@ -73,7 +73,7 @@ export class RequesteR extends Subject<IncomingReq> implements IncomingReq {
 		thisReq.url = this.url = Url.parse(req.url, true);
 		thisReq.httpVersion = this.httpVersion = req.httpVersion;
 		
-		this.headers.extractFrom(req);
+		this.headers.getFrom(req);
 		thisReq.headers = this.headers;
 		for (let name in Object.getOwnPropertyNames(this.headers)) if(
 			name !== 'que' &&

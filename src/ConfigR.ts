@@ -7,7 +7,7 @@ import { Subscriber } from 'rxjs/Subscriber';
 
 import { HttpEvent } from './servers/events';
 import { PoolCount } from './handlers/PoolR';
-	import { Route, METHOD, ROUTE_OPTION } from './routes/Route';
+import { Route, METHOD, ROUTE_OPTION } from './routes/Route';
 
 export class ServeRConfig {
 	requestHandler: (socket__: Socket) => void;
@@ -16,10 +16,11 @@ export class ServeRConfig {
 		HOST: 'localhost';
 	env: {
 		PORT: number;
+		HOST: string;
 		NODE_ENV: 'development'; 
 	};
 	backlog: number;
-	wantsPoolR: true;
+	wantsPoolR: false;
 	handleCheckContinue: true;
 	onListeningMessage: true;
 	onCloseMessage: true;
@@ -43,8 +44,8 @@ export class ServeRConfig {
 		Object.assign(this, config);
 	}
 
-	onListening(type: string ='http', host: string = this.env.HOST, port: number = 3000) {
-		console.log(`A ${type} server running on ${host}:${port} is listening`);
+	onListening(type: string = 'http', host: string = 'localhost', port: number = 3000) {
+		console.log(`An ${type} server running on ${host}:${port} is listening`);
 	}
 
 	onClose(type: string ='http', host: string = this.env.HOST, port: number = 3000) {

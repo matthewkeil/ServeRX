@@ -64,6 +64,7 @@ export class HttpR extends BehaviorSubject<ServeREvent> {
 			: this.pool$ = <Observer<HandleR>>{ next:()=> {}, error:()=>{}, complete:()=>{} }
 
 		this.server$ = Subject.create(this.pool$, this._buildServer());
+
 		this.server__ = this.server$.subscribe(
 			(socket: HandleR) => {}, 
 			(err: Error) => { this._handleInternalErrClose('server-subscription', err) },
@@ -89,7 +90,9 @@ export class HttpR extends BehaviorSubject<ServeREvent> {
 		this.server.maxHeadersCount = this.config.maxHeadersCount;
 		this.server.setTimeout(this.config.timeout.ms, this.config.timeout.cb);
 		this.server.timeout = this.config.timeout.ms;
+		
 		let upgrade$, clientError$, checkContinue$;
+
 		if (this.config.allowUpgrade) {
 			const upgrade$ = FromEventObservable.call(this.server, /(connect|upgrade)/,
 				(req: IncomingMessage, socket: Socket, head: Buffer) => {
