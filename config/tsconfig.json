@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"inlineSourceMap": true,
+		"lib": ["es2015", "es6", "es7", "dom"],
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"noImplicitAny": true,
+		"noUnusedLocals": true,
+		"strictNullChecks": true,
+		"target": "es6",
+		"typeRoots": ["../node_modules/@types"]
+	},
+	"exclude": [
+		"../node_modules"
+	]
+}
