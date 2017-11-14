@@ -2,26 +2,20 @@
 import * as http from 'http';
 import * as net from 'net';
 
-export type Configuration = ServerConfigI | HttpServerConfigI;
+export type Configuration = ServerConfig| HttpServerConfig;
 
-export interface ServerConfigI {
+export class ServerConfig {
 	name?: string;
 	NODE_ENV?: string;
 	port?: number;
 	host?: string;
 	exclusive?: boolean;
-	onListening?: boolean | ((...args: any[]) => void);
-	onClosing?: boolean | ((...args: any[]) => void);
-}
-
-export class ServerConfig implements ServerConfigI {
-	name?: string;
-	NODE_ENV?: string;
-	port?: number;
-	host?: string;
-	exclusive?: boolean;
-	onListening?: boolean | ((...args: any[]) => void);
-	onClosing?: boolean | ((...args: any[]) => void);
+	onListening?: boolean | ((config: Configuration, address: {
+			port: number;
+			family: string;
+			address: string;
+		}) => void);
+	onClosing?: boolean | ((config: Configuration) => void);
 	
 	constructor(private config?: Configuration) {
 		this.name = 'ServeRX';
@@ -31,36 +25,53 @@ export class ServerConfig implements ServerConfigI {
 	}
 }
 
-export interface HttpServerConfigI extends ServerConfigI {
-	maxHeadersCount?: number;
-	timeout?: {
-		ms?: number;
-		cb?: (...args: any[]) => any;
-	};
-	backlog?: number;
-	allowUpgrade?: boolean;
-	handleCheckContinue?: ((req: http.IncomingMessage, res: http.ServerResponse) => void) | boolean;
-	handleClientError?: ((err: Error, socket: net.Socket) => void) | boolean;
-}
-
-export class HttpServerConfig extends ServerConfig implements HttpServerConfigI {
+export class HttpServerConfig extends ServerConfig {
 	maxHeadersCount?: number;
 	timeout?: {
 		ms?: number,
 		cb?: (...args: any[]) => any;
 	} = {};
 	backlog?: number;
-	allowUpgrade?: boolean;
+	handleUpgrade?: boolean;
 	handleCheckContinue?: ((req: http.IncomingMessage, res: http.ServerResponse) => void) | boolean;
 	handleClientError?: ((err: Error, socket: net.Socket) => void) | boolean;
-
+	
 	constructor(config?: Configuration) {
 		super(config);
-		this.allowUpgrade = false;
+		this.handleUpgrade = false;
 		this.handleCheckContinue = false;
 		this.handleClientError = false;
 	}
 }
+
+
+
+
+
+
+
+// export interface ServerConfigI {
+// 	name?: string;
+// 	NODE_ENV?: string;
+// 	port?: number;
+// 	host?: string;
+// 	exclusive?: boolean;
+// 	onListening?: boolean | ((config: Configuration) => void);
+// 	onClosing?: boolean | ((config: Configuration) => void);
+// }
+
+// export interface HttpServerConfigI extends ServerConfigI {
+// 	maxHeadersCount?: number;
+// 	timeout?: {
+// 		ms?: number;
+// 		cb?: (...args: any[]) => any;
+// 	};
+// 	backlog?: number;
+// 	handleUpgrage?: boolean;
+// 	handleCheckContinue?: ((req: http.IncomingMessage, res: http.ServerResponse) => void) | boolean;
+// 	handleClientError?: ((err: Error, socket: net.Socket) => () => void) | boolean;
+// }
+
 
 
 // 		config.env.backlog ? this. number;

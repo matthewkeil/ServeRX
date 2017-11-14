@@ -5,15 +5,14 @@ import * as http from 'http';
 
 
 import { Configuration } from './../ConfigRX';
-// import { Upgrade } from './Upgrade';
 
 
 export class Handler {
 
-	constructor(private config: Configuration) {
-	}
+	constructor(private _config: Configuration) {}
 
-	public handle(incomingReq: http.IncomingMessage, serverRes: http.ServerResponse): void {
+	public handle = function (incomingReq: http.IncomingMessage, serverRes: http.ServerResponse): void {
+		// return res.end();// console.log(incomingReq, this._config);
 	} 
 
 }

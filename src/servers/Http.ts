@@ -1,162 +1,153 @@
 
 
+
 import * as util from 'util';
 import * as http from 'http';
-import * as net from 'net';
 
 import * as Rx from 'rxjs';
 
 
-import { HttpServerConfig, HttpServerConfigI } from '../ConfigRX';
+import { HttpServerConfig } from '../ConfigRX';
 import { Handler } from './../handlers/Handler';
 // import { Socket } from './../handlers/Socket';
 
 
-export class Http extends Rx.Subject {
+export class Http extends Rx.Subject<any> {
 
-	public config: HttpServerConfig
-	private _server__: Rx.Subscription;
-	private _handler: Handler;
-	/**
-	 * 
-	 * Http.server, Http.server$ and Http.handler only exist during testing (config.NODE_ENV === 'testing')
-	 * 
-	 */
-	public server?: http.Server;
-	public server$?: Rx.Observable<any>[];
+	public config: HttpServerConfig;
+	private _server: http.Server;
+	private _listeners__: Rx.Subscription;
 	public handler?: Handler;
-
 	
-	constructor(private _config?: HttpServerConfig | HttpServerConfigI) {
-		
+
+	constructor(private _config?: HttpServerConfig) {
+
 		super();
+		
+		/**
+		 * check to see if _config is an instantiated HttpServerConfig object
+		 * if already instsantiated set public config to passed in _config
+		 * or create a new instantiated object
+		 */ 
 		this._config instanceof HttpServerConfig ?
 			this.config = this._config :
-			this.config = new HttpServerConfig(this._config)
-	
-		this._server__ = this.buildServer().subscribe();
+			this.config = new HttpServerConfig(this._config);
+
+
+		/**
+		 * Create the request handler and pass handle function to the server
+		 * as the request handler
+		 */
+		this.handler = new Handler(this.config);
+		this._server = http.createServer(this.handler.handle);
+
+
+		/**
+		 * Configure the server object
+		 */
+		if (this.config.maxHeadersCount) { 
+			this._server.maxHeadersCount = this.config.maxHeadersCount
+		}
+
+		if (this.config.timeout !== undefined) {
+			
+			this.config.timeout.ms ? 
+				this._server.timeout = this.config.timeout.ms : 
+				this.config.timeout.ms = this._server.timeout;
+			
+			if (util.isFunction(this.config.timeout.cb)) { 
+				this._server.setTimeout(this.config.timeout.ms, <Function>this.config.timeout.cb);
+			}
+		}
+
 		
+		/**
+		 * Call listen() on the server and pass in relevant config options.
+		 * Once server is listening subscribe to the event listeners.  Listeners
+		 * are only subscribed to once server is actively listening to prevent
+		 * memory leaks for attempts that do not fully connect as there will be
+		 * no way to unsubscribe if server doesn't get to "listening" event
+		 */		
+		this._server.listen({
+			port: this.config.port ? this.config.port : this.config.port = 3000,
+			host: this.config.host,
+			backlog: this.config.backlog,
+			exclusive: this.config.exclusive
+		 }, () => {
+
+			this._listeners__ = this._getListeners().subscribe(
+				() => {},
+				err => this.error(err),
+				() => this.error(new Error("Server listener completed unexpectedly"))
+			);
+
+			!this.config.onListening ?
+				null :
+				(this.config.onListening === true || !util.isFunction(this.config.onListening)) ?
+					this._defaultListening() :
+					this.config.onListening(this.config, this._server.address());
+		});
+	}
+
+	error(err: Error) {
+
+		if (this._server && this._server.listening) { this._server.close() }
+
+		if (this._listeners__ && !this._listeners__.closed) {
+			this._listeners__.unsubscribe();
+		}
+
+		super.error(err);
 	}
 	
+	complete() {
 
-	public buildServer(): Rx.Observable<any> {
-		
-		let server = http.createServer();
-		let server$: Rx.Observable<any>[] = [];
-		this._handler = new Handler(this.config);
+		if (this._server && this._server.listening) { this._server.close() }
 
-		if (this.config.NODE_ENV === 'testing') {
-			this.server = server;
-			this.server$ = server$;
-			this.handler = this._handler;
+		if (this._listeners__ && !this._listeners__.closed) {
+			this._listeners__.unsubscribe();
 		}
 		
-		server$.push(new Rx.Observable(observer => {
-
-			let listenArgs: any[] = [
-				this.config.port || 3000,
-				this.config.host || 'localhost'
-			];
-
-			if (this.config.maxHeadersCount) { 
-				server.maxHeadersCount = this.config.maxHeadersCount
-			}
-
-			if (this.config.timeout !== undefined) {
-				
-				this.config.timeout.ms ? 
-					server.timeout = this.config.timeout.ms : 
-					this.config.timeout.ms = server.timeout;
-				
-				if (util.isFunction(this.config.timeout.cb)) { 
-					server.setTimeout(this.config.timeout.ms, <Function>this.config.timeout.cb);
-				}
-			}
-
-			if (this.config.backlog) { 
-				listenArgs.push(this.config.backlog)
-			}
-			
-			listenArgs.push(() => {
-				!this.config.onListening ? 
-					(<any>this.config).onListening(listenArgs) : 
-					this.config.onListening === false ?
-						null :
-						console.log(`Listening on ${this.config.host}:${this.config.port}` + 
-							this.config.backlog ? ` with a backlog set to ${this.config.backlog}...` : '...') ;
-				observer.complete();
-			});
-			
-			server.listen(listenArgs);
-
-		}));
-
-		// server$.push(Rx.Observable.fromEvent(server, 'request',
-		// 	(req: http.IncomingMessage, res: http.ServerResponse) => {
-		// 		this._handler.handle(req, res);
-		// 	}
-		// ));
-			
-		// server$.push(Rx.Observable.fromEvent(server, 'error',
-		// 	(err: Error) => this.error(err)
-		// ));
-			
-		// server$.push(Rx.Observable.fromEvent(server, 'close', () => { 
-		// 	!this.config.onClosing ? 
-		// 		null :
-		// 		this.config.onClosing === true ?
-		// 			console.log(`Closing server on ${this.config.host}:${this.config.port}` + 
-		// 				this.config.backlog ? ` with a backlog set to ${this.config.backlog}...` : '...') :
-		// 			this.config.onClosing(activeConfigs);
-		// 	this.complete();
-		// }));
-
-		// if (this.config.handleCheckContinue) server$.push(Rx.Observable
-		// 	.fromEvent(server, 'checkContinue',
-		// 		(req: http.IncomingMessage, res: http.ServerResponse) => {
-		// 			(<any>this.config).handleCheckContinue(req, res);
-		// 			server.emit('request', req, res);
-		// 		}
-		// ));
-
-		// if (this.config.handleClientError) server$.push(Rx.Observable
-		// 	.fromEvent(server, 'clientError', 
-		// 		(err: Error, socket: net.Socket) => { 
-		// 			(<any>this.config).handleClientError(err, socket);
-		// 		}
-		// ));
-
-		// if (this.config.allowUpgrade) server$.push(
-		// 	Rx.Observable.fromEvent(server, 'connect',
-		// 		(req: http.IncomingMessage, socket: net.Socket, head: Buffer) => {
-		// 			this.next(new Upgrade (this.protocol, this.config, req, socket, head));
-		// 	}),
-		// 	Rx.Observable.fromEvent(server, 'upgrade',
-		// 		(req: http.IncomingMessage, socket: net.Socket, head: Buffer) => {
-		// 			this.next(new Upgrade (this.protocol, this.config, req, socket, head));
-		// 	})
-		// );
-
-		return Rx.Observable
-			.merge(...server$)
-			.retry(3)
-			.debounceTime(200);
+		super.complete();
+	}
+	
+	private _getListeners(): Rx.Observable<any> {
+		return Rx.Observable.merge(
+			Rx.Observable.fromEvent(this._server, 'error',
+				(err: Error) => this.error(err)
+			),
+			Rx.Observable.fromEvent(this._server, 'close', () => { 
+				!this.config.onClosing ? 
+					null :
+					this.config.onClosing === true ?
+						console.log(`Closing server on ${this.config.host}:${this.config.port}...`) :
+						this.config.onClosing(this.config);
+				this.complete()
+			})
+			// ,	!this.config.handleCheckContinue ?
+			// 		Rx.Observable.empty() :
+			// 		Rx.Observable.fromEvent(server, 'checkContinue',
+			// 			(req: http.IncomingMessage, res: http.ServerResponse) => {
+			// 				this.config.handleCheckContinue(req, res);
+			// 				server.emit('request', req, res);
+			// 			})
+			// ,	!this.config.handleClientError ? 
+			// 		Rx.Observable.empty() : 
+			// 		Rx.Observable.fromEvent(server, 'clientError', 
+			// 			(err: Error, socket: net.Socket) => { 
+			// 				this.config.handleClientError(err, socket)();
+			// 			})
+			// ,	!this.config.handleUpgrage ? 
+			// 		Rx.Observable.empty() :
+			// 		Rx.Observable.fromEvent(server, 'upgrade',
+			// 			(req: http.IncomingMessage, socket: net.Socket, head: Buffer) => {
+			// 				this.next(new Upgrade (this.protocol, this.config, req, socket, head));
+			// 		})
+		)
 	}
 
+	private _defaultListening() {
+		let address = this._server.address();
+		console.log(`Listening on ${address.address}:${address.port}...`)
+	}
 }
-
-	// next(value: any) {
-	// 	super.next(value);
-	// }
-
-	// error(err: Error) {
-	// 	this._server__.unsubscribe();
-	// 	// this.handler__.unsubscribe();
-	// 	super.error(err);
-	// }
-	
-	// complete() {
-	// 	this._server__.unsubscribe();
-	// 	// this.handler__.unsubscribe();
-	// 	super.complete();
-	// }

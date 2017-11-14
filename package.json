@@ -29,7 +29,9 @@
     "node": ">=7.0.0"
   },
   "dependencies": {
+    "@types/chai-as-promised": "^7.1.0",
     "body-parser": "^1.18.0",
+    "chai-as-promised": "^7.1.1",
     "cors": "^2.8.3",
     "mime": "^1.2.11",
     "mime-types": "^2.1.17",
@@ -38,6 +40,7 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/body-parser": "^1.16.5",
     "@types/chai": "^4.0.4",
     "@types/gulp": "^4.0.4",
@@ -47,15 +50,20 @@
     "@types/sinon": "^2.3.4",
     "@types/uuid": "^3.4.1",
     "@types/webpack-merge": "0.0.5",
+    "axios": "^0.16.2",
     "chai": "^4.1.2",
     "gulp": "^3.9.1",
     "gulp-changed": "^3.1.0",
     "gulp-mocha": "^4.3.1",
     "gulp-nodemon": "^2.2.1",
     "gulp-sourcemaps": "^2.6.1",
+    "gulp-spawn-mocha": "^3.3.1",
     "gulp-typescript": "^3.2.2",
     "mocha": "^3.5.3",
+    "mochawesome": "^2.3.1",
     "nodemon": "^1.12.1",
+    "opn": "^5.1.0",
+    "simple-autoreload-server": "^0.2.7",
     "sinon": "^3.3.0",
     "ts-node": "^3.3.0",
     "typescript": "^2.4.2"
