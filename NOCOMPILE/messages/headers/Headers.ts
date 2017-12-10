@@ -33,8 +33,7 @@ import { Dnt } from './Dnt';
 // User-Agent figures out what browser and device are being used
 
 
-// RawHeaders parallel the Node provided header object but names are camelCase and values are an array
-export type RawHeaders = {[name: string]: string[]};
+
 
 // ServeRX headers are generic. Allows for each header to have its own type to aid with itelisense
 export type Header<T> = { [name: string]: T[] };
@@ -84,34 +83,10 @@ export class Headers implements HeadersI {
 		// if (config.headers.etag) Object.assign(this.categories, { etag: new Etag(config) });
 	}
 
-	/* processRaw() converts Node provided raw headers into ServeRX header format for intellisense usability
-	 * All names are converted to camel case and values are split and pushed into an array. Node provided 
-	 * object name/value pairs are segregated into applicable header categories.
-	 *
-	 * https://nodejs.org/dist/latest-v8.x/docs/api/http.html#http_message_headers
-	 */
+
 	public processRaw(req: IncomingMessage): RawHeaders {
 		
-		let raw: RawHeaders = {};
 		
-		for (let key in req.headers) {
-			
-			let name = changeCase(key, Case.camel);
-			let value: string[] = [];
-			
-			// Normalize 'referer' tag name
-			if (name === 'referrer' || name === 'referer') name = 'referer';
-			
-			// Check for an array of values and if not an array split on the ',' and push values into array
-			// Node already checks for duplicate values hence no need to check again 
-			Array.isArray(req.headers[key]) ?
-				value = req.headers[key].map(val => val.trim()) :
-				req.headers[key].split(',').forEach(val => value.push(val.trim()));
-			
-			Object.assign(raw, {[name]: value})
-		};
-
-		return raw;
 	}
 
 	public getFrom(raw: RawHeaders): BehaviorSubject<HeadersI> {

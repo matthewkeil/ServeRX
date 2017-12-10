@@ -16,6 +16,9 @@ export class ServerConfig {
 			address: string;
 		}) => void);
 	onClosing?: boolean | ((config: Configuration) => void);
+	logging?: {
+
+	}
 	
 	constructor(private config?: Configuration) {
 		this.name = 'ServeRX';
@@ -30,17 +33,82 @@ export class HttpServerConfig extends ServerConfig {
 	timeout?: {
 		ms?: number,
 		cb?: (...args: any[]) => any;
-	} = {};
+	};
 	backlog?: number;
 	handleUpgrade?: boolean;
 	handleCheckContinue?: ((req: http.IncomingMessage, res: http.ServerResponse) => void) | boolean;
 	handleClientError?: ((err: Error, socket: net.Socket) => void) | boolean;
+	headers?: {
+		incoming: {
+			acceptCharset?: boolean;
+			customDirectives?: string[];
+			acceptEncoding?: boolean;
+			acceptLanguage?: boolean;
+			acceptType?: boolean;
+		},
+		outgoing: {
+			
+		}
+	}
+	router?: {
+		buildEntry?: string
+		mountRootAt?: string
+	}
+	request?: {
+		methodsHandled?: {
+			get?: boolean
+			put?: boolean
+			post?: boolean
+			patch?: boolean
+			delete?: boolean
+			head?: boolean
+			connect?: boolean
+			trace?: boolean
+			options?: boolean
+		}
+	}
+	response?: {
+		stringify: {
+			escape?: boolean;
+			replacer?: (key: string, value: any) => any;
+			spaces?: string | number;
+		}
+	}
+	logging?: {
+		completions: boolean;
+	}
 	
 	constructor(config?: Configuration) {
 		super(config);
+		this.timeout = {};
 		this.handleUpgrade = false;
 		this.handleCheckContinue = false;
 		this.handleClientError = false;
+		this.router = {}
+		this.headers = {
+			incoming: {
+				acceptCharset: true,
+				acceptEncoding: true,
+				acceptLanguage: true,
+				acceptType: true
+			},
+			outgoing: {
+
+			}
+		}
+		this.request = {
+			methodsHandled: {
+				get: true,
+				put: true,
+				post: true,
+				patch: true,
+				delete: true,
+				head: true,
+				connect: false,
+				trace: false,
+				options: true
+			}
+		}
 	}
 }
 

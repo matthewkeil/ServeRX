@@ -1,6 +1,6 @@
 
 
-import { otherRoute } from './otherRoute';
+import { Route } from '../../src/routing/Route';
 
 import { RouteObserver } from './RouteObserver';
 
@@ -18,15 +18,14 @@ function deleteUser(observer: RouteObserver<any>) {}
 
 function postFooBarNoFixedParam(observer: RouteObserver<any>) {}
 
-const users = [
-	'users', 
-		['login', POST, login],
-		['logout', logout],
-		[':id', GET, getUser],
-		[':id', DELETE, deleteUser],
-		[POST,
-			[':foo/:bar/fixedParam', otherRoute],
-			[':foo/:bar', postFooBarNoFixedParam]
-]];
+
+let usersRoute = Route.nest({})
+
+
+module.exports = Route.root('/').nest({
+	['users']: userRouter,
+	['snippets']: snippetsRouter
+})
+
 
 export default users;

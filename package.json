@@ -29,6 +29,8 @@
     "node": ">=7.0.0"
   },
   "dependencies": {
+    "@ngrx/core": "github:ngrx/core",
+    "@ngrx/store": "github:ngrx/store",
     "@types/chai-as-promised": "^7.1.0",
     "body-parser": "^1.18.0",
     "chai-as-promised": "^7.1.1",
@@ -45,7 +47,7 @@
     "@types/chai": "^4.0.4",
     "@types/gulp": "^4.0.4",
     "@types/mocha": "^2.2.43",
-    "@types/node": "^7.0.13",
+    "@types/node": "^7.0.48",
     "@types/rx": "^4.1.1",
     "@types/sinon": "^2.3.4",
     "@types/uuid": "^3.4.1",

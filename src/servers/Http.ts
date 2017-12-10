@@ -1,45 +1,79 @@
 
 
 
-import * as util from 'util';
-import * as http from 'http';
+import * as util from 'util'
+import * as http from 'http'
 
-import * as Rx from 'rxjs';
+import * as Rx from 'rxjs'
 
 
-import { HttpServerConfig } from '../ConfigRX';
-import { Handler } from './../handlers/Handler';
-// import { Socket } from './../handlers/Socket';
+import { HttpServerConfig } from '../ConfigRX'
+import { Headers } from './../messages/headers/Headers'
+import { Route } from './../routing/Route';
+import { RootRouter } from './../routing/Router';
+import { Request, RequestPatcher } from './../messages/Request'
+import { Response, ResponsePatcher } from '../messages/Response'
+import { Handler } from './../handlers/Handler'
 
 
 export class Http extends Rx.Subject<any> {
 
-	public config: HttpServerConfig;
-	private _server: http.Server;
-	private _listeners__: Rx.Subscription;
-	public handler?: Handler;
+	public config: HttpServerConfig
+	public headers: Headers
+	public router: RootRouter
+	public handler?: Handler
+
+	private _server: http.Server
+	private _listeners__: Rx.Subscription
 	
 
-	constructor(private _config?: HttpServerConfig) {
+	constructor(_config?: HttpServerConfig) {
 
-		super();
+		super()
 		
 		/**
 		 * check to see if _config is an instantiated HttpServerConfig object
 		 * if already instsantiated set public config to passed in _config
 		 * or create a new instantiated object
 		 */ 
-		this._config instanceof HttpServerConfig ?
-			this.config = this._config :
-			this.config = new HttpServerConfig(this._config);
+		_config instanceof HttpServerConfig ?
+			this.config = _config :
+			this.config = new HttpServerConfig(_config)
+		
+
+		/**
+		 * build and configure internal dependencies.  Make sure to run Route.ts 
+		 * first.  The root router object sits withing the Route singleton object * so that wherever the Route() API is called from any routing file it 
+		 * always mounts to the root router
+		 */
+		Route.router instanceof RootRouter ?
+			this.router = Route.router :
+			this.router = Route.router = new RootRouter(this.config)
+			
+			
+		/**
+		 * Patch http.IncomingMessage and http.ServerResponse to add ServeRx
+		 * functionality and headers to the objects node provides to the handler
+		 */
+		this.headers = new Headers(this.config)
+		
+		RequestPatcher(
+			(<any>http).IncomingMessage,
+			this.config, 
+			this.headers,
+			this.router );
+
+		new ResponsePatcher(
+			this.config,
+			(<any>http).ServerResponse, 
+			this.headers);
 
 
 		/**
-		 * Create the request handler and pass handle function to the server
-		 * as the request handler
+		 * Patch http.creatServer to add ServerRx functionality and 
 		 */
-		this.handler = new Handler(this.config);
-		this._server = http.createServer(this.handler.handle);
+
+		this._server = http.createServer();
 
 
 		/**

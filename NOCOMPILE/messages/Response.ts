@@ -19,7 +19,7 @@ import { Header, Headers, RawHeaders } from './headers/Headers';
 
 
 
-export interface ResponseI {
+export interface Response {
 	id: string;
 	raw: http.ServerResponse;
 	date: Date;
@@ -34,10 +34,14 @@ export interface ResponseI {
 	body?: string | Buffer;
 }
 
-export class Response {
+export function Response(req) {
 
-	constructor(private config: ServerConfig) {
-	}
+		(<any>http).ServerResponse.bind(this, req);
+
+}
+util.inherits(Response, http.ServerResponse)
+
+/**
 
 	public parse(req: RequestI, serverRes: http.ServerResponse): ResponseI {
 		let res = <ResponseI>{};

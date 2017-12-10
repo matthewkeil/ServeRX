@@ -3,8 +3,6 @@ import { EWOULDBLOCK } from 'constants';
 import { read } from 'fs';
 
 
-import { URL } from 'url';
-import * as querystring from 'querystring';
 import * as http from 'http'; 
 import * as bodyParser from 'body-parser';
 
@@ -61,22 +59,7 @@ export class Request {
 
 		let req = <RequestI>{};
 
-		req.id = uuid.v4();
-		req.raw = incoming;
 		req.Headers = this.headers;
-		req.method = incoming.method.toUpperCase() || 'GET';
-		req.httpVersion = {
-			major: incoming.httpVersionMajor,
-			minor: incoming.httpVersionMinor
-		};
-		req.url = new URL(incoming.url);
-		req.protocol = req.url.protocol;
-		req.host = req.url.host;
-		req.path = req.url.pathname;
-		req.query = querystring.parse(req.url.search);
-		req.hash = req.url.hash.startsWith('#') ? 
-			req.url.hash.substr(1) :
-			req.url.hash;
 		req.rawHeaders = this.headers.processRaw(incoming);
 		req.headers$ = this.headers.getFrom(req.rawHeaders);
 		req.headers$.subscribe(headers => req.headers = headers);
