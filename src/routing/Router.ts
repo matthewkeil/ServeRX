@@ -8,7 +8,8 @@ import * as Rx from 'rxjs';
 
 import { Route } from './Route'
 import { HttpServerConfig } from '../../src/ConfigRX';
-import { MatchString, MS } from '../common/MatchString'
+import { MatchString, Ms } from '../common/MatchString'
+import { ResponseMessage } from './../messages/Response';
 
 
 
@@ -16,12 +17,16 @@ import { MatchString, MS } from '../common/MatchString'
 export type METHOD = 'GET' | 'PUT' | 'POST' | 'PATCH' | 'DELETE' | 'HEAD' | 'CONNECT' | 'TRACE' | 'OPTIONS';
 
 export interface RouteConfig {
-	auth?: {}
+	auth: {
+		isRequired: boolean
+	}
 }
 
-export type RouteHandler<T> = {
+ 
+
+export type RouteHandler = {
 	config?: RouteConfig
-	observable: Rx.Observable<T>
+	observable: (config?: RouteConfig) => Rx.Observable<ResponseMessage>
 }
 
 export interface RoutingTree {
@@ -32,16 +37,16 @@ export class Router {
 
 	matchString?: MatchString
 	nested?: RoutingTree
-	handlers?: RouteHandler<any>[]
-	get?: RouteHandler<any>
-	put?: RouteHandler<any>
-	post?: RouteHandler<any>
-	patch?: RouteHandler<any>
-	delete?: RouteHandler<any>
-	head?: RouteHandler<any>
-	connect?: RouteHandler<any>
-	trace?: RouteHandler<any>
-	options?: RouteHandler<any>
+	handlers?: RouteHandler[]
+	get?: RouteHandler
+	put?: RouteHandler
+	post?: RouteHandler
+	patch?: RouteHandler
+	delete?: RouteHandler
+	head?: RouteHandler
+	connect?: RouteHandler
+	trace?: RouteHandler
+	options?: RouteHandler
 
 	constructor() {}
 
@@ -67,6 +72,12 @@ export class RootRouter extends Router {
 
 	get root() {
 		return this._root
+	}
+
+	returnRouteHandler(path: MatchString): Rx.Observable<RouteHandler> {
+		return new Rx.Observable<RouteHandler>(observer => {
+
+		})
 	}
 
 }

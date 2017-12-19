@@ -43,6 +43,13 @@ function _stringify(
 	return json
 }
 
+export type ResponseMessage = {
+	statusCode: number
+	statusMessage: string
+	headers: {[header: string]: string[]}
+	body: string | Buffer
+}
+
 export interface Response extends http.ServerResponse {
 	id: {
 		insertId: string;
@@ -57,9 +64,8 @@ export interface Response extends http.ServerResponse {
 	sendJSON: (objToSend: Object) => void;
 }
 
-export class ResponsePatcher {
+export function ResponsePatcher(config: HttpServerConfig, Response: any, _headers: Headers) {
 
-	constructor(config: HttpServerConfig, Response: any, _headers: Headers) {
 
 		Object.keys(ResponsePatcher).forEach(method => {
 			Object.assign(
@@ -73,7 +79,7 @@ export class ResponsePatcher {
 
 	}
 
-	static _send(
+ /** _send(
 		args: {
 			statusCode?: number;
 			message?: string;

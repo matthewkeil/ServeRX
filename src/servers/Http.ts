@@ -2,6 +2,7 @@
 
 
 import * as util from 'util'
+import * as net from 'net'
 import * as http from 'http'
 
 import * as Rx from 'rxjs'
@@ -13,15 +14,28 @@ import { Route } from './../routing/Route';
 import { RootRouter } from './../routing/Router';
 import { Request, RequestPatcher } from './../messages/Request'
 import { Response, ResponsePatcher } from '../messages/Response'
-import { Handler } from './../handlers/Handler'
+import { ConnectionHandler } from './../handlers/ConnectionHandler'
 
+
+export interface HttpPair {
+	req: Request
+	res: Response
+}
+
+export interface UpgradeSet {
+	req: Request
+	socket: net.Socket
+	head: Buffer | string
+}
+
+export type Connection = HttpPair | UpgradeSet
 
 export class Http extends Rx.Subject<any> {
 
 	public config: HttpServerConfig
 	public headers: Headers
 	public router: RootRouter
-	public handler?: Handler
+	public handler?: ConnectionHandler
 
 	private _server: http.Server
 	private _listeners__: Rx.Subscription
@@ -61,19 +75,20 @@ export class Http extends Rx.Subject<any> {
 			(<any>http).IncomingMessage,
 			this.config, 
 			this.headers,
-			this.router );
+			this.router
+		)
 
-		new ResponsePatcher(
+		ResponsePatcher(
 			this.config,
 			(<any>http).ServerResponse, 
-			this.headers);
+			this.headers
+		)
 
 
 		/**
 		 * Patch http.creatServer to add ServerRx functionality and 
 		 */
-
-		this._server = http.createServer();
+		this._server = http.createServer(this.handler.handle)
 
 
 		/**
@@ -113,14 +128,14 @@ export class Http extends Rx.Subject<any> {
 				() => {},
 				err => this.error(err),
 				() => this.error(new Error("Server listener completed unexpectedly"))
-			);
+			)
 
 			!this.config.onListening ?
 				null :
 				(this.config.onListening === true || !util.isFunction(this.config.onListening)) ?
 					this._defaultListening() :
-					this.config.onListening(this.config, this._server.address());
-		});
+					this.config.onListening(this.config, this._server.address())
+		})
 	}
 
 	error(err: Error) {
@@ -184,4 +199,5 @@ export class Http extends Rx.Subject<any> {
 		let address = this._server.address();
 		console.log(`Listening on ${address.address}:${address.port}...`)
 	}
+
 }

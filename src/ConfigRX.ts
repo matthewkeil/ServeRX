@@ -1,3 +1,4 @@
+import { CORSDomains } from './messages/headers/Cors';
 
 import * as http from 'http';
 import * as net from 'net';
@@ -28,6 +29,7 @@ export class ServerConfig {
 	}
 }
 
+
 export class HttpServerConfig extends ServerConfig {
 	maxHeadersCount?: number;
 	timeout?: {
@@ -45,6 +47,10 @@ export class HttpServerConfig extends ServerConfig {
 			acceptEncoding?: boolean;
 			acceptLanguage?: boolean;
 			acceptType?: boolean;
+			origin?:{
+				allowed?: CORSDomains
+				blacklist?: CORSDomains
+			}
 		},
 		outgoing: {
 			

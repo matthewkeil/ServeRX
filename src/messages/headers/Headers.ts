@@ -1,3 +1,5 @@
+import { Cors } from './Cors';
+import { Response } from './../Response';
 
 
 
@@ -32,13 +34,25 @@ export type SetDirective<T> = ((args?: T | T[]) => void) | {
 	[subDirective: string]: SetDirective<T> 
 }
 
+export type HeaderPriority = 'pre' | 'ordered' | 'info'
+
+export type HeaderValue<T> = Rx.Observable<T>
+
+export type HeaderFactory<T> = (config: HttpServerConfig) => Header<T> 
+
 export class Header<T> {
-	get?: (args: string[]) => Rx.Observable<T>;
-	set?: SetDirective<T>;
+	priority?: HeaderPriority;
+	get?: <T>(args: string[], req: Request, res: Response) => HeaderValue<T>
+	set?: SetDirective<any>
 }
 
-export interface IncomingHeaders {
-	[headerName: string]: Rx.Observable<any>
+export type IncomingHeaders = {
+	[headerName: string]: {
+		priority: HeaderPriority
+		value: HeaderValue<any>
+		req: Request
+		res: Response
+	}
 }
 
 export interface OutgoingHeaders extends Headers {
@@ -49,77 +63,94 @@ export interface OutgoingHeaders extends Headers {
 	}];
 }
 
-export class Headers {
+export class Headers implements Cors {
 
-	acceptCharset?: Header<AcceptCharset>;
-	acceptEncoding?: Header<AcceptEncoding>;
-	acceptLanguage?: Header<AcceptLanguage>;
-	acceptType?: Header<AcceptType>;
-	contentType?: Header<ContentType>;
-
-	static notRead: Header<any> = {
-		get: (args: any) => {
-			let error = new Error('Header not read by server');
-			(<any>error).args = args;
-			return ErrorObservable.create(error);
+	[Symbol.iterator] = function* (): Iterator<string> {
+		let keys = Object.keys(this);
+		for (let key in keys) {
+			yield key
 		}
 	}
 
+	origin: Cors['origin']
+		
 	constructor(private _config: HttpServerConfig) {
 
-		let categories = [
-			new Content(this._config)
-		];
-
-		categories.forEach(category => {
-			Object.getOwnPropertyNames(category).forEach(prop => {
-				Object.assign(this[prop], category[prop]);
-			});
-		});
+		[
+			Cors
+		].forEach(category => Object.getOwnPropertyNames(category)
+			.forEach(prop => Object.assign(this, {
+				[prop]: category[prop](this._config)
+			}))
+		);
 
 	}
 
-
-	/* 
-	* parse() normalizes Node provided raw headers such that all names are 
-	* converted to camel case and values are split into an array. Values
-	* are assigned to an observable if the header is read otherwise an error
-	* observable is returned with the args attached to the error object.
-	*
-	* https://nodejs.org/dist/latest-v8.x/docs/api/http.html#http_message_headers
-	*/
-
-	public parse(req: Request): HeadersI {
-
-		let headers = <HeadersI>{};
-
-		for (let key in req.raw.headers) {
-			
-			let name = CC.of(key, CC.To.camel);
-			let value: string[] = [];
-			let headerVal: Rx.Observable<any>;
-			
-			// Normalize 'referer' tag name
-			if (name === 'referrer' || name === 'referer') name = 'referer';
-			
-			/**
-			 * Check for an array of values and if not an array split on the ',' 
-			 * and push values into array. Node already checks for duplicate 
-			 * values hence no need to check for duplicates again
-			 */
-			Array.isArray(req.raw.headers[key]) ?
-				value = (<string[]>req.raw.headers[key]).map(val => val.trim()) :
-				(<string>req.raw.headers[key]).split(',')
-					.forEach(val => value.push(val.trim()));
-
-			this[name] !== undefined ? 
-				headerVal = (<Header<any>>this[name]).get(value) :
-				headerVal = Headers.notRead.get(value);
-			
-			Object.assign(headers, {[name]: headerVal});
-		};
-
-		return headers;
+	static notRead(headerName: string, args: any): HeaderValue<any> {
+		return new Rx.Observable(observer => {
+			Rx.Observable.from(args).subscribe({
+				next: arg => observer.next(arg),
+				complete: () => observer.error(new Error(`Header ${headerName} not handled`))
+			})
+		})
 	}
-	
+
+  /* 
+	 * parse() normalizes Node provided raw headers such that all names are 
+	 * converted to camel case and values are split into an array. Values
+	 * are assigned to an observable if the header is read otherwise an error
+	 * observable is returned with the args attached to the error object.
+	 *
+	 * https://nodejs.org/dist/latest-v8.x/docs/api/http.html#http_message_headers
+	 */
+
+	static parseIncoming(req: Request, res: Response): Rx.Observable<IncomingHeaders> {
+
+		return new Rx.Observable<IncomingHeaders>(observer => {
+
+			let _headers = req._headers;
+			let headers = req.headers;
+			let headers$ = req.headers$;
+			
+			Object.keys(req.headers).forEach(key => {
+				
+				//  Convert names to camelCase. also verifies no problematic characters
+				let headerName = CC.of(key, CC.To.camel);
+				
+				// Normalize 'referer' tag name
+				if (headerName === 'referrer' || headerName === 'referer') {
+					headerName = 'referer'
+				}
+				/**
+				 * Check for an array of values and if not an array split on the ',' 
+				 * and push values into array. Node already checks for duplicate 
+				 * values hence no need to check for duplicates again
+				 */
+				let rawVal = Array.isArray(headers[headerName]) ?
+					(<string[]>headers[headerName]).map(val => val.trim()) :
+					(<string>headers[headerName]).split(',').map(val => val.trim());
+				
+				let headerVal = {[headerName]: 
+					_headers.hasOwnProperty(headerName) ? {
+						value: _headers[headerName].get(rawVal, req, res),
+						priority: _headers[headerName].priority,
+						req,
+						res
+					} : {
+						value: Headers.notRead(headerName, rawVal),
+						priority: <HeaderPriority>'info',
+						req,
+						res
+					}
+				}
+
+				Object.assign(headers$, headerVal);
+				observer.next(headerVal);
+			})
+
+			return observer.complete();
+		})
+	}	
+
+
 }

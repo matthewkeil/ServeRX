@@ -6,7 +6,7 @@ import * as Rx from 'rxjs';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 
 import { HttpServerConfig } from '../../ConfigRX';
-import { Headers, Header } from './Headers';
+import { Headers, Header, HeaderValue } from './Headers';
 
 // accept // no accept-'*'
 // charset;
@@ -54,13 +54,13 @@ export type AcceptLanguage = {
 export class Content {
 
 	// incoming
-	public acceptCharset: Header<AcceptCharset>;
-	public acceptEncoding: Header<AcceptEncoding>;
-	public acceptLanguage: Header<AcceptLanguage>;
-	public acceptType: Header<AcceptType>;
+	public acceptCharset: HeaderValue<AcceptCharset>;
+	public acceptEncoding: HeaderValue<AcceptEncoding>;
+	public acceptLanguage: HeaderValue<AcceptLanguage>;
+	public acceptType: HeaderValue<AcceptType>;
 
 	// outgoing
-	public ContentType: Header<ContentType>;
+	public ContentType: HeaderValue<ContentType>;
 
 
 	constructor(private _config: HttpServerConfig) {
