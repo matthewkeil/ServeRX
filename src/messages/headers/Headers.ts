@@ -38,11 +38,11 @@ export type HeaderPriority = 'pre' | 'ordered' | 'info'
 
 export type HeaderValue<T> = Rx.Observable<T>
 
-export type HeaderFactory<T> = (config: HttpServerConfig) => Header<T> 
+export type HeaderFactory<U> = (config: HttpServerConfig) => U 
 
-export class Header<T> {
+export class Header {
 	priority?: HeaderPriority;
-	get?: <T>(args: string[], req: Request, res: Response) => HeaderValue<T>
+	get?: (args: string[], req: Request, res: Response) => HeaderValue<any>
 	set?: SetDirective<any>
 }
 
@@ -72,13 +72,12 @@ export class Headers implements Cors {
 		}
 	}
 
-	origin: Cors['origin']
+	origin: Cors.Origin
 		
 	constructor(private _config: HttpServerConfig) {
 
-		[
-			Cors
-		].forEach(category => Object.getOwnPropertyNames(category)
+		[Cors]
+		.forEach(category => Object.getOwnPropertyNames(category)
 			.forEach(prop => Object.assign(this, {
 				[prop]: category[prop](this._config)
 			}))

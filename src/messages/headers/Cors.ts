@@ -8,16 +8,6 @@ import { Request } from '../Request';
 import { Response } from '../Response';
 
 
-export interface CORSDomains {
-	[domain: string]: {
-		secure?: boolean
-		subDomains?: boolean | string | string[]
-		port?: number
-	}
-}
-
-export type Origin = any
-
 
 export class Cors {
 
@@ -47,9 +37,30 @@ export class Cors {
 
 /** ===== Access-Control-Expose-Headers =====
  * 
- *  
+ *  XMLHttpRequest simple response headers are listed. All others must be explicity added 
+ *  to be exposed to the browser's javascript. Accepts arguments as either comma delimited 
+ *  list of arguments or an array.
+ * 
+ *  Cache-Control
+ *  Content-Language
+ *  Content-Type
+ *  Expires
+ *  Last-Modified
+ *  Pragma
  * 
  */
+	public accessControlExposeHeaders: Header<AccessControlExposeHeaders>
+
+	static accessControlExposeHeaders: HeaderFactory<AccessControlExposeHeaders> =
+		(config: HttpServerConfig): AccessControlExposeHeaders => {
+
+		return {
+			set: (...headerNames: string[]) => {
+				// figure out how to set headers
+				return
+			}
+		}
+	}
 
 /** ===== Access-Control-Allow-Origin =====
  * 
@@ -82,14 +93,14 @@ export class Cors {
 		})
 	}
 
-	public origin: Header<Origin>
-	
-	static origin: HeaderFactory<Origin> = (config: HttpServerConfig) => {
+	public origin: Cors.Origin
+
+	static origin: HeaderFactory<Cors.Origin> = (config: HttpServerConfig) => {
 		return {
 			priority: 'pre',
 			get: (args: string[], req: Request, res: Response) => {
 
-				return new Rx.Observable<any>(observer => {
+				return new Rx.Observable<void>(observer => {
 
 					let blacklist = config.headers.incoming.origin.blacklist;
 					let allowed = config.headers.incoming.origin.allowed;
@@ -172,7 +183,11 @@ export class Cors {
 
 					if (!isPreFlight) {
 
-						
+						// Set Access-Control-Expose-Headers ???
+
+						// Set Access-Control-Allow-Origin
+
+						// Set Access-Control-Allow-Credentials
 						
 						observer.complete()
 					}
@@ -180,6 +195,26 @@ export class Cors {
 			},
 			set: null
 		}
+	}
+}
+
+export namespace Cors {
+
+	export interface CORSDomains {
+		[domain: string]: {
+			secure?: boolean
+			subDomains?: boolean | string | string[]
+			port?: number
+		}
+	}
+
+	export interface Origin extends Header {
+		priority: 'pre';
+		get: (args: string[], req: Request, res: Response) => HeaderValue<void>
+	}
+
+	export interface AccessControlExposeHeaders extends Header {
+		set: (...headerNames: any[]) => void
 	}
 }
 		
