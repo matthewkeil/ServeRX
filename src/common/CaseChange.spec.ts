@@ -1,8 +1,8 @@
 import { expect } from 'chai';
-import * as CC from './CaseChange';
+import { CaseChange as CC } from './CaseChange';
 
 
-describe('CaseChange method ', function () {
+describe('CaseChange', function () {
 	let testString = ['this', 'is', 'just', 'a', 'test', 'yo'];
 	describe('separateWords()', function () {
 		it('should break words at lower to upper case transitions', function () {

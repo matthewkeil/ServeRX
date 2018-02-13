@@ -1,0 +1,64 @@
+{
+	"rules": {
+		"printWidth": 120,
+		"adjacent-overload-signatures": true,
+		"no-parameter-reassignment": true,
+		"only-arrow-functions": true,
+		"prefer-for-of": true,
+		"promise-function-async": true,
+		"typedef": [
+			true,
+			"call-signature",
+			"arrow-call-signature",
+			"parameter",
+			"arrow-parameter",
+			"property-declaration",
+			"member-variable-declaration",
+			"variable-declaration",
+			"object-destructuring",
+			"array-destructuring"
+		],
+		"await-promise": true,
+		"arrow-parens": false,
+		"arrow-return-shorthand": true,
+		"class-name": true,
+		"curly": true,
+		"forin": true,
+		"match-default-export-name": true,
+		"max-line-length": 100,
+		"member-access": true,
+		"newline-before-return": true,
+		"new-parens": false,
+		"no-duplicate-imports": true,
+		"no-duplicate-super": true,
+		"no-eval": true,
+		"no-floating-promises": true,
+		"no-invalid-template-strings": true,
+		"no-sparse-arrays": true,
+		"no-unnecessary-callback-wrapper": true,
+		"no-unnecessary-type-assertion": true,
+		"no-use-before-declare": true,
+		"one-variable-per-declaration": true,
+		"return-undefined": true,
+		"trailing-comma": false,
+		"triple-equals": true,
+		"typeof-compare": true,
+		"variable-name": true,
+		"member-ordering": [
+			true,
+			{
+				"order": [
+					"static-field",
+					"static-method",
+					"instance-field",
+					"constructor",
+					"instance-method"
+				]
+			}
+		]
+	},
+	"extends": [
+		"tslint:latest",
+		"tslint-config-prettier"
+	]
+}

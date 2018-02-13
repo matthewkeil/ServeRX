@@ -1,181 +1,163 @@
-import { HttpServerConfig } from './../../ConfigRX';
-import { Category, RawHeaders, HeaderCategory } from './Headers';
-	
-import { mime } from 'mime-types';
 
 
 
-// import { Observable } from 'rxjs/Observable';
+
+import * as Rx from 'rxjs';
+import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+
+import { HttpServerConfig } from '../../ConfigRX';
+import { Headers, Header, HeaderValue } from './Headers';
+
+// accept // no accept-'*'
+// charset;
+// encoding;
+// language;
+// ranges;
+
 // import { IncomingMessage } from 'http';
+// import { RawHeaders, Category, HeaderCategory } from './Headers';
 
 
-// import { IncomingReq, RequestRx } from '../RequestRx';
-// import { ResponseRx } from '../ResponseRx';
 
-export interface ContentType {
-	type: string;
-	subtype: string;
-	q: number;
+export type ContentType = {
+	mime: string;
+	sub?: string;
 }
 
-export type ContentLength = number;
-
-export type ContentEncoding = 'gzip' | 'compress' | 'deflate' | 'identity' | 'br' | 'ERROR';
-
-export interface ContentI {
-	type?: ContentType[];
-	length?: ContentLength[];
-	encoding?: ContentEncoding[];
+export interface AcceptType extends ContentType {
+	q?: number;
 }
-
-export class Content implements HeaderCategory {
-
-	type?: boolean;
-	length?: boolean;
-	encoding?: boolean;
 	
-	constructor(config?: HttpServerConfig) {
-		config.headers.content.type ? this.type = true : this.type = false;
-		config.headers.content.length ? this.length = true : this.length = false;
-		config.headers.content.encoding ? this.encoding = true : this.encoding = false;
+export type AcceptCharset = {
+	charset: string;
+	q?: number;
+}
+
+export type Directive = 
+	'gzip' | 
+	'compress' | 
+	'deflate' | 
+	'br' | 
+	'identity';
+	
+export type AcceptEncoding = {
+	directive: string;
+	q?: number;
+}
+
+export type AcceptLanguage = {
+	language: string;
+	locale?: string;
+	q?: number;
+}
+
+export class Content {
+
+	// incoming
+	public acceptCharset: HeaderValue<AcceptCharset>;
+	public acceptEncoding: HeaderValue<AcceptEncoding>;
+	public acceptLanguage: HeaderValue<AcceptLanguage>;
+	public acceptType: HeaderValue<AcceptType>;
+
+	// outgoing
+	public ContentType: HeaderValue<ContentType>;
+
+
+	constructor(private _config: HttpServerConfig) {
+		this.acceptCharset = this._config.headers.incoming.acceptCharset ?
+			Content.acceptCharset : Headers.notRead;
+		this.acceptEncoding = this._config.headers.incoming.acceptEncoding ? 
+			Content.acceptEncoding(this._config) : Headers.notRead;
+		this.acceptLanguage = this._config.headers.incoming.acceptLanguage ? 
+			Content.acceptLanguage :Headers.notRead;
+		this.acceptType = this._config.headers.incoming.acceptType ?
+			Content.acceptType : Headers.notRead;
+
+		this.ContentType = Content.contentType;
 	}
 
-	public getFromRaw(headers: RawHeaders): Category {
-		
-		let content: ContentI;
-		
-		if (this.type) content.type = this.getTypes(headers);
-		if (this.length) content.length = this.getLength(headers);
-		if (this.encoding) content.encoding = this.getEncoding(headers);
-		
-		return content;
-	}
+	private static directives = [
+		'*'
+		, 'compress'
+		, 'deflate'
+		, 'br'
+		, 'identity'
+		, 'gzip'
+	];
 
-	public getTypes(headers: RawHeaders): ContentType[] {
-
-		let contentTypes: ContentType[] = [];
-
-		if (headers.contentType) {
-			headers.contentType.forEach(ct => {
-				let t = ct.split(';');
-				let main = t[0].split('/')
-				t[1] ? null : t[1] = '1';
-				contentTypes.push({type: main[0], subtype: main[1], q: +t[1]});
-			});
-			return contentTypes;
+	static acceptCharset: Header<AcceptCharset> = {
+		get: (charsets: string[]): Rx.Observable<AcceptCharset> => {
+			return Rx.Observable.from(charsets.map(
+				set => {
+					let values = set.split(';');
+					return { charset: values[0], q: +values[1] }
+				}
+			));
 		}
-
-		// RFC2616 section 7.2.1
-		return [{type: 'application', subtype: 'octet-stream', q: 1}];
-	}
-
-	public typeExists(type: ContentType): boolean {
-		if (mime.lookup(
-			type.type.concat(
-				type.subtype ?
-					'/' + type.subtype :
-					''
-			)
-		)) return true;
-		return false;
 	}
 	
-	public getLength(headers: RawHeaders): ContentLength[] {
-
-		let length = headers.contentLength;
-
-		if (length) return [parseInt(length[0], 10)]
-		
-		return [0];
-	}
-
-	private CE = ['gzip', 'compress', 'deflate', 'identity', 'br'];
-
-	public getEncoding(headers: RawHeaders): ContentEncoding[] {
-		let encoding = headers.contentEncoding;
-		let contentEncoding: ContentEncoding[] = [];
-
-		if (encoding) {
-			encoding.forEach(enc => {
-				let found = false;
-				this.CE.forEach(ce => {
-					if (enc === ce) found = true;
-				});
-				found ?  
-					contentEncoding.push(<ContentEncoding>enc) : 
-					contentEncoding.push('ERROR');
-			});
+	static acceptEncoding(config: HttpServerConfig): Header<AcceptEncoding> {
+		return {
+			get: (encodings: string[]): Rx.Observable<AcceptEncoding> => {
+				return Rx.Observable.from(encodings.map(
+					set => {
+						let values = set.split(';');
+						return { directive: values[0], q: +values[1] }
+					}
+				));
+			}
 		}
-		
-		return contentEncoding;
 	}
+
+	static acceptLanguage: Header<AcceptLanguage> = {
+		get: (languages: string[]): Rx.Observable<AcceptLanguage> => {
+			return Rx.Observable.from(languages.map(
+				lang => {
+					let values = lang.split(';');
+					let language = values[0].split('-');
+					return { language: language[0], locale: language[1], q: +values[1]}
+				}
+			))
+		}
+	}
+
+	static acceptType: Header<AcceptType> = {
+		get: (types: string[]): Rx.Observable<AcceptType> => {
+			return Rx.Observable.from(types.map(
+				type => {
+					let values = type.split(';');
+					let mime = values[0].split('/');
+					return { mime: mime[0], subType: mime[1], q: +values[1]}
+				}
+			))
+		}
+	}
+
+	static contentType: Header<ContentType> = {
+		set: (type: ContentType): void => {} 
 }
-	// public setTypes(...types: string[]): Header {
-
-	// 	let ct = [];
-		
-	// 	types.forEach(type => {
-	// 		ct.push(type.indexOf('/') === -1
-	// 			? mime.lookup(type)
-	// 			: type);
-	// 	});
-
-	// 	return {'Content-Type': ct};
-	// };
-
-	// public setLength(res: ResponseRx): Header {
-	// 	return null // request body only, measured in octets (8-bit bytes) {'Content-Length': [res.length.toString()]};
-	// };
-
-	
-	// public isType(...types: string[]): boolean {
-
-	// 	var contentType = types.forEach(type => this.getTypes(type));
-	// 	var matches = true;
-
-	// 	if (!contentType) {
-	// 		return (false);
-	// 	}
-
-	// 	if (type.indexOf('/') === -1) {
-	// 		type = mime.lookup(type);
-	// 	}
-
-	// 	if (type.indexOf('*') !== -1) {
-	// 		type = type.split('/');
-	// 		contentType = contentType.split('/');
-	// 		matches &= (type[0] === '*' || type[0] === contentType[0]);
-	// 		matches &= (type[1] === '*' || type[1] === contentType[1]);
-	// 	} else {
-	// 		matches = (contentType === type);
-	// 	}
-
-	// 	return (matches);
-	// };
 
 
-// /**
-//  * creates and sets negotiator on request if one doesn't already exist,
-//  * then returns it.
-//  * @private
-//  * @function negotiator
-//  * @param    {Object} req the request object
-//  * @returns  {Object}     a negotiator
-//  */
-// function negotiator(req) {
-//     var h = req.headers;
+// static getEncoding(config: HttpServerConfig): (encodings: string[]) => Rx.Observable<AcceptEncoding> {
+		// 	return (encodings: string[]) => {
 
-//     if (!req._negotiator) {
-//         req._negotiator = new Negotiator({
-//             headers: {
-//                 accept: h.accept || '*/*',
-//                 'accept-encoding': h['accept-encoding'] ||
-//                     'identity'
-//             }
-//         });
-//     }
+		// 		let acceptedDirectives = Accept.directives.concat(config.headers.accept.acceptedDirectives);
+				
+		// 		return new Rx.Observable(observer => {
+		// 			encodings.forEach(encoding => {
+		// 				let values = encoding.split(';');
+		// 				acceptedDirectives.forEach(dir => {
+		// 					let found = false;
+		// 					if (values[0] === dir) {
+		// 						let found = true;
+		// 						observer.next({directive: <Directive>values[0], q: +values[1]});
+		// 						return;
+		// 					}
+		// 					observer.error(new Error('Accept-Encoding Directive not recognized'))
+		// 				});
+		// 			});
+		// 			observer.complete();
+		// 		});
 
-//     return (req._negotiator);
-// }
-
-
+		// 	}
+		// }

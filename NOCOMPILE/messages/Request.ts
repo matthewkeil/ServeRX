@@ -1,162 +1,110 @@
-import { Observable } from './../../00-otherServers/rxjs/Observable';
-import { EWOULDBLOCK } from 'constants';
-import { read } from 'fs';
+import { Response } from './Response';
 
 
-import * as http from 'http'; 
-import * as bodyParser from 'body-parser';
-
-
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { AsyncSubject } from 'rxjs/AsyncSubject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-// import { Observable } from 'rxjs/Observable';
-// import { merge } from 'rxjs/operator/merge';
-// import { FromEventObservable } from 'rxjs/observable/FromEventObservable';
-// import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import * as net from 'net';
+import * as http from 'http';
 
 
 import * as uuid from 'uuid';
+import * as url from 'url';
+import * as Querystring from 'querystring';
+import * as Rx from 'rxjs';
 
 
-import { HttpServerConfig } from '../ConfigRX';
-import { RawHeaders, Header, Headers, HeadersI } from './headers/Headers';
 
-export interface RequestI {
-		id: string;
-		raw: http.IncomingMessage;
-		method?: string;
-		httpVersion?: {
-			major: number;
-			minor: number;
-		};
-		url?: URL;
-		protocol?: string;
-		host?: string;
-		path?: string;
-		query?: {[key: string]: string};
-		hash?: string;
-		rawHeaders?: RawHeaders;
-		Headers: Headers;
-		headers$?: BehaviorSubject<HeadersI>;
-		headers?: HeadersI;
-		body$?: null | Observable<string | Buffer>;
-		body?: null | Array<string | Buffer>;
-		parser?: (req: http.IncomingMessage, res: http.ServerResponse) => any;
-		// certificate?: Object;  // tlsSocket.getPeerCertificate(detailed?: boolean)
+import * as CC from '../common/CaseChange';
+import { Ms, MatchString } from './../common/MatchString';
+import { RootRouter, RouteHandler } from './../routing/Router';
+import { Configuration, HttpServerConfig } from '../ConfigRX';
+import { Header, Headers, IncomingHeaders, HeaderPriority, HeaderValue } from './headers/Headers';
+import { HeaderExecutionOrder } from '../handlers/HttpHandler';
+
+export type Parameters = {[param: string]: string | string[]}
+
+export class User {
+	public authorization(req: Request): Rx.Observable<Authorization> {
+	  return new Rx.Observable<Authorization>(obs => {
+		  if (!req.headers$.authorization && !req.headers$.cookie) obs.error(
+			  new Error('Authorization required'))
+		  obs.next(req.headers$.authorization)
+		  obs.complete()
+
+		  })
+  }
 }
 
-export class Request {
+export interface Authorization {
+	isRequired: boolean
+	isAuthorized: boolean
+}
 
-	headers: Headers;
-
-	constructor(private config: HttpServerConfig) {
-		this.headers = new Headers(this.config);
-	}
-
-	public parse(incoming: http.IncomingMessage): RequestI {
-
-		let req = <RequestI>{};
-
-		req.Headers = this.headers;
-		req.rawHeaders = this.headers.processRaw(incoming);
-		req.headers$ = this.headers.getFrom(req.rawHeaders);
-		req.headers$.subscribe(headers => req.headers = headers);
-		req.body$ = this.getBody(req);
-		if (req.body$) req.body$.subscribe(chunk => req.body.push(chunk));
-		
-		return req;
-	}
+export interface Request extends http.IncomingMessage {
 	
-	public getBody(req: RequestI): null | Observable<string | Buffer> {
-		
-		// Message must be from an incoming method
-		if (req.method === 'POST' || req.method === 'PATCH') {
-			
-			req.headers.content.type.forEach(type => {
-				if (!req.parser) {
-					if (type.type.includes('application')) type.subtype.includes('json') ?
-						req.parser = bodyParser.json() :
-						parser = bodyParser.raw
-					if (type.type.includes('text')) parser = bodyParser.text;
-				}
-			});
+	_headers: Headers
+	_router: RootRouter
+	_user: User
 
-			return new Observable(observer => {
-				incoming.on('data', (chunk) => {
-					observer.next(chunk);
-				});
-				req.on('end', () => {
-					observer.complete();
-				});
-			});
-		}
+
+	parse: () => void
+	getHeaders: (req: Request, res: Response) => Rx.Observable<IncomingHeaders> 
+	getHandler: () => Rx.Observable<RouteHandler>
+	_getRouteHandler: () => Rx.Observable<RouteHandler>
+	routeHandler?: RouteHandler
 	
-		return null;
+	
+	id: {
+		insertId: string;
+		timestamp: number;
+		port: number;
+		family: string;
+		address: string;
+	}
+	method: string;
+	_url: url.Url;
+	path: MatchString;
+	params: Parameters
+	query: Parameters;
+	hash: string;
+	headers$: IncomingHeaders;
+
+
+	auth: Authorization;
+
+
+}
+
+export function RequestPatcher(IncomingMessage: Function, config: HttpServerConfig, headers: Headers, router: RootRouter ): any {
+
+	IncomingMessage.prototype.parse = function parse(): void {
+		
+		(<Request>this).auth = <Authorization>{};
+
+		(<Request>this).method = this.method.toUpperCase() || 'GET';
+		(<Request>this)._url = url.parse(this.url, true);
+		(<Request>this).path = Ms.pathToMs((<url.Url>this._url).pathname);
+		(<Request>this).params = Ms.extractParams(this.path);
+		(<Request>this).query = (<url.Url>this._url).query;
+
+		let queryKeys = Object.keys(this.query);
+		if (queryKeys.length > 0)
+			queryKeys.forEach(key => this.params.hasOwnProperty(key) ?
+				this.params[key] = [].concat(this.params[key], this.query[key]) :
+				this.params[key] = this.query[key]);
+
+		(<Request>this).hash = (<url.Url>this._url).hash.startsWith('#') ?
+			this._url.hash.substr(1) :
+			this._url.hash;
+
+		return
 	}
 
-	public startHandlerTimer(handlerName): void {
-		/**
-		 * Start the timer for a request handler function. You must explicitly invoke
-		 * endHandlerTimer() after invoking this function. Otherwise timing information
-		 * will be inaccurate.
-		 * @public
-		 * @function startHandlerTimer
-		 * @param    {String}    handlerName The name of the handler.
-		 * @returns  {undefined}
-		*/
-		// // For nested handlers, we prepend the top level handler func name
-		// var name = (this._currentHandler === handlerName
-		// 	? handlerName 
-		// 	: this._currentHandler + '-' + handlerName);
-
-		// if (!this._timerMap) {
-		// 	this._timerMap = {};
-		// }
-
-		// this._timerMap[name] = process.hrtime();
-
-		// dtrace._rstfy_probes['handler-start'].fire(function () {
-		// 	return ({
-		// 			serverName: this.serverName,
-		// 			_currentRoute: this._currentRoute, // set in server._run
-		// 			name: name,
-		// 			_dtraceId: this._dtraceId
-		// 	});
-		// });
+	IncomingMessage.prototype.getHeaders = function getHeaders(req: Request, res: Response): Rx.Observable<IncomingHeaders> {
+		return Headers.parseIncoming(req, res)
 	}
 
-	public endHandlerTimer(handlerName): void {
-		/**
-		 * Stop the timer for a request handler function.
-		 * @public
-		 * @function endHandlerTimer
-		 * @param    {String}    handlerName The name of the handler.
-		 * @returns  {undefined}
-		*/
-		// var self = this;
-
-		// // For nested handlers, we prepend the top level handler func name
-		// var name = (self._currentHandler === handlerName ?
-		// 				handlerName : self._currentHandler + '-' + handlerName);
-
-		// if (!self.timers) {
-		// 	self.timers = [];
-		// }
-
-		// self._timerMap[name] = process.hrtime(self._timerMap[name]);
-		// self.timers.push({
-		// 	name: name,
-		// 	time: self._timerMap[name]
-		// });
-
-		// dtrace._rstfy_probes['handler-done'].fire(function () {
-		// 	return ({
-		// 				serverName: this.serverName,
-		// 				_currentRoute: this._currentRoute, // set in server._run
-		// 				name: name,
-		// 				_dtraceId: this._dtraceId
-		// 		});
+	IncomingMessage.prototype.getHandler = function getHandler(): Rx.Observable<RouteHandler> {
+		return (<Request>this)._router.returnRouteHandler(this.path)
 	}
+
+
 }

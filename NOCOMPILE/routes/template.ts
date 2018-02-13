@@ -1,31 +1,31 @@
+import Route from '../../src/routing/Route';
+
+import * as Rx from 'rxjs';
 
 
-import { Route } from '../../src/routing/Route';
 
-import { RouteObserver } from './RouteObserver';
-
-const GET = 'GET';
-const POST = 'POST';
-const DELETE = 'DELETE';
-
-function login(observer: RouteObserver<any>) {}
-
-function logout(observer: RouteObserver<any>) {}
-
-function getUser(observer: RouteObserver<any>) {}
-
-function deleteUser(observer: RouteObserver<any>) {}
-
-function postFooBarNoFixedParam(observer: RouteObserver<any>) {}
+let getByID = Rx.Observable.from(['booga', 'boo']);
 
 
-let usersRoute = Route.nest({})
+let insertUser = {
+	observable: Rx.Observable.from(['diggity', 'dangnabbit'])
+};
+
+let etc = 'use your imagination';
 
 
-module.exports = Route.root('/').nest({
-	['users']: userRouter,
-	['snippets']: snippetsRouter
-})
 
+module.exports = Route('users')
+	.get(new Rx.Observable<any>(observer => {
+		observer.next('all users');
+	}))
+	.nest(
+		Route(':id')
+			.get('auth', getByID)
+			.post(insertUser),
+		Route(':jiggityJam')
+			.get(etc)
+			.delete(etc)
+			.options(etc)
+	)
 
-export default users;

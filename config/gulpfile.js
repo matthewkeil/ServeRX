@@ -1,5 +1,5 @@
 
-
+const rimraf = require('rimraf');
 
 const { root, ROOT, SOURCE, DEST, BUILD, TESTS, PROJECT_JS } = require('./helpers');
 
@@ -8,7 +8,7 @@ const changed = require('gulp-changed');
 const sourcemaps = require('gulp-sourcemaps');
 
 const ts = require('gulp-typescript');
-const tsProject = ts.createProject('./tsconfig.json');
+const tsProject = ts.createProject('../tsconfig.json');
 
 const mocha = require('gulp-spawn-mocha');
 const launcher = require('simple-autoreload-server');
@@ -18,10 +18,10 @@ const nodemon = require('gulp-nodemon');
 
 
 /**
- * 
- * 
+ *
+ *
  * Typescript transpilation
- * 
+ *
  *
  */
 gulp.task('transpile', function () {
@@ -33,11 +33,11 @@ gulp.task('transpile', function () {
 		.pipe(gulp.dest(DEST))
 });
 /**
- * 
- * 
+ *
+ *
  * Servers
  *
- *  
+ *
  */
 
 gulp.task('startTestResultsServer', function () {
@@ -62,11 +62,11 @@ gulp.task('startDevServer', ['transpile', 'startTestResultsServer'], function ()
 	})
 });
 /**
- * 
- * 
+ *
+ *
  * Testing related tasks
- * 
- * 
+ *
+ *
  */
 let runTests = function () {
 	return gulp.src(TESTS)
@@ -90,31 +90,38 @@ gulp.task('runTests', runTests);
 gulp.task('runTestsOnce', ['transpile'], function () {
 	runTests();
 	openBrowser();
-}); 
+});
 /**
- * 
- * 
+ *
+ *
  * Watch related tasks
- * 
- * 
+ *
+ *
  */
 
 gulp.task('watchTS', ['transpile'], function () {
-	return gulp.watch(SOURCE, ['transpile'])
+	return gulp.watch(SOURCE, ['transpile']);
 });
 
 gulp.task('watchTests', ['runTestsOnce'], function () {
 	return gulp.watch(BUILD, ['runTests'])
 });
 
-gulp.task('watch', ['watchTS', 'watchTests']);
+gulp.task('watch', ['watchTS', 'watchTests', 'startDevServer']);
 /**
- * 
- * 
+ *
+ *
  * NPM task names
- * 
- * 
+ *
+ *
  */
-gulp.task('dev', ['watch', 'startDevServer']);
+
+gulp.task('deleteBuild', function () {
+	console.log('deleting .build/');
+	rimraf(root('.build'), (err) => { });
+});
+
+gulp.task('dev', ['deleteBuild', 'watch', 'startDevServer']);
+
 gulp.task('default', ['transpile']);
 gulp.task('test', ['runTestsOnce']);

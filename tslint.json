@@ -1,0 +1,54 @@
+{
+	"rules": {
+		"printWidth": 120,
+		"adjacent-overload-signatures": true,
+		"no-parameter-reassignment": true,
+		"only-arrow-functions": true,
+		"prefer-for-of": true,
+		"promise-function-async": true,
+		"typedef": [
+			true,
+			"call-signature",
+			"parameter",
+			"property-declaration",
+			"member-variable-declaration"
+		],
+		"await-promise": true,
+		"arrow-parens": false,
+		"arrow-return-shorthand": true,
+		"class-name": true,
+		"curly": false,
+		"forin": true,
+		"match-default-export-name": true,
+		"max-line-length": 100,
+		"member-access": true,
+		"newline-before-return": false,
+		"new-parens": false,
+		"no-duplicate-imports": false,
+		"no-duplicate-super": true,
+		"no-eval": true,
+		"no-floating-promises": true,
+		"no-invalid-template-strings": true,
+		"no-sparse-arrays": true,
+		"no-unnecessary-callback-wrapper": false,
+		"no-unnecessary-type-assertion": true,
+		"no-use-before-declare": true,
+		"one-variable-per-declaration": true,
+		"return-undefined": true,
+		"trailing-comma": false,
+		"triple-equals": true,
+		"typeof-compare": true,
+		"variable-name": false,
+		"member-ordering": [
+			true,
+			{
+				"order": [
+					"static",
+					"instance-field",
+					"constructor",
+					"instance-method"
+				]
+			}
+		]
+	}
+}

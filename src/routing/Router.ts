@@ -1,83 +1,90 @@
 
 
+import { isError } from "util";
+
+
+import { ServerError } from "../common";
+
+import {
+	Handler,
+	HandlerConfig
+} from "./";
 
 
 
-import * as Rx from 'rxjs';
-
-
-import { Route } from './Route'
-import { HttpServerConfig } from '../../src/ConfigRX';
-import { MatchString, Ms } from '../common/MatchString'
-import { ResponseMessage } from './../messages/Response';
-
-
-
-
-export type METHOD = 'GET' | 'PUT' | 'POST' | 'PATCH' | 'DELETE' | 'HEAD' | 'CONNECT' | 'TRACE' | 'OPTIONS';
-
-export interface RouteConfig {
-	auth: {
-		isRequired: boolean
-	}
-}
-
- 
-
-export type RouteHandler = {
-	config?: RouteConfig
-	observable: (config?: RouteConfig) => Rx.Observable<ResponseMessage>
-}
-
-export interface RoutingTree {
-	[segment: string]: Router | RoutingTree
+export interface RouterConfiguration {
 }
 
 export class Router {
 
-	matchString?: MatchString
-	nested?: RoutingTree
-	handlers?: RouteHandler[]
-	get?: RouteHandler
-	put?: RouteHandler
-	post?: RouteHandler
-	patch?: RouteHandler
-	delete?: RouteHandler
-	head?: RouteHandler
-	connect?: RouteHandler
-	trace?: RouteHandler
-	options?: RouteHandler
+	public root: Handler;
+	constructor(...args: any[]) {
+		try {
+			(<any>this).root = Handler.create(args);
+			if (!(this.root instanceof Handler))
+				throw isError(this.root) ? this.root : new ServerError('unknown error building root handler');
+		} catch (err) { throw err }
+	}
 
-	constructor() {}
-
-}
-
-export class RootRouter extends Router {
-
-	private _root: boolean
-	public mountedAt?: MatchString
-	public middleware: any[]
-	public tree: Router | RoutingTree
-
-	constructor(private _config: HttpServerConfig) {
-
-		super()
-		this._root = true
-		this.middleware = []
-
-		if (MS.isValidPath(this._config.router.mountRootAt)) {
-			this.mountedAt = MS.pathToMS(this._config.router.mountRootAt)
+	public configure(config: ServerConfig): Router {
+		let path: MatchString | null;
+		this._config = config;
+		/**
+		 * mount location order of precedence is
+		 * 1 - submitted config file mountAt field
+		 * 2 - if Router was passed on config.router.obj, use existing path
+		 * 3 - root
+		 */
+		(path = MS.isValid(this._config.router.mountAt))
+			? (this.path = path)
+			: this.path ? null : (this.path = []);
+		/**
+		 * auth persists from both passed config.router.obj and config.router.auth
+		 * and will flag any differences/discrepencies when applying both. middleware
+		 * will compose/append any additional middleware passed with the config file
+		 */
+		if (!(config.router.obj instanceof Router)) {
+			this.auth = this.checkAuth(config);
+			this.middleware = this.buildStack(config);
 		}
+
+		this.buildRoutes(config);
+
+		return this;
 	}
 
-	get root() {
-		return this._root
+	private find(input: any): RouteObservable {
+		let self = this;
+
+		let resolve = <RouteObservable>new Rx.Observable<RouteHandler>(
+			observer => {
+				let ms = MS.isValid(input);
+
+				if (ms) {
+					if (!(util.isObject(ms[0]) && ms[0].hasOwnProperty("~"))) {
+						observer.error(
+							new RouteError(
+								"must resolve route from the root ~/",
+								input
+							)
+						);
+					}
+
+					ms.shift(); // pulls root element off the front of the array
+
+					let route$ = self._routes.resolve(ms);
+					let subscription = route$.subscribe(observer);
+
+					resolve.cancel = () => {
+						if (route$) route$.cancel();
+						if (subscription && !subscription.closed)
+							subscription.unsubscribe();
+						observer.complete();
+					};
+				} else observer.error(new RouteError("path not valid", input));
+			}
+		);
+
+		return resolve;
 	}
-
-	returnRouteHandler(path: MatchString): Rx.Observable<RouteHandler> {
-		return new Rx.Observable<RouteHandler>(observer => {
-
-		})
-	}
-
 }

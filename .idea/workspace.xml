@@ -1,0 +1,1124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="6bca16ef-1415-4b1b-93de-20fb6ebd701e" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries/matthewkeil.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/typescript-compiler.xml" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change beforePath="$PROJECT_DIR$/NOCOMPILE/routes/template.ts" afterPath="$PROJECT_DIR$/NOCOMPILE/routes/template.ts" />
+      <change beforePath="$PROJECT_DIR$/config/.eslintignore" afterPath="$PROJECT_DIR$/.eslintignore" />
+      <change beforePath="$PROJECT_DIR$/config/.eslintrc" afterPath="$PROJECT_DIR$/.eslintrc" />
+      <change beforePath="$PROJECT_DIR$/config/gulpfile.js" afterPath="$PROJECT_DIR$/gulpfile.js" />
+      <change beforePath="$PROJECT_DIR$/config/helpers.js" afterPath="$PROJECT_DIR$/helpers.js" />
+      <change beforePath="$PROJECT_DIR$/config/tsconfig.json" afterPath="$PROJECT_DIR$/tsconfig.json" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" afterPath="$PROJECT_DIR$/package-lock.json" />
+      <change beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
+      <change beforePath="$PROJECT_DIR$/src/ConfigRX.ts" afterPath="$PROJECT_DIR$/src/ConfigRX.ts" />
+      <change beforePath="$PROJECT_DIR$/src/common/ApiError.ts" afterPath="$PROJECT_DIR$/src/common/ApiError.ts" />
+      <change beforePath="$PROJECT_DIR$/src/common/MatchString.ts" afterPath="$PROJECT_DIR$/src/common/MatchString.ts" />
+      <change beforePath="$PROJECT_DIR$/src/messages/headers/Cors.ts" afterPath="$PROJECT_DIR$/src/messages/headers/Cors.ts" />
+      <change beforePath="$PROJECT_DIR$/src/messages/headers/Headers.ts" afterPath="$PROJECT_DIR$/src/messages/headers/Headers.ts" />
+      <change beforePath="$PROJECT_DIR$/src/routing/Route.ts" afterPath="$PROJECT_DIR$/src/routing/Route.ts" />
+      <change beforePath="$PROJECT_DIR$/src/routing/Router.ts" afterPath="$PROJECT_DIR$/src/routing/Router.ts" />
+      <change beforePath="$PROJECT_DIR$/src/servers/Http.ts" afterPath="$PROJECT_DIR$/src/servers/Http.ts" />
+      <change beforePath="$PROJECT_DIR$/trysomething.js" afterPath="" />
+    </list>
+    <ignored path="$PROJECT_DIR$/.tmp/" />
+    <ignored path="$PROJECT_DIR$/temp/" />
+    <ignored path="$PROJECT_DIR$/tmp/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <splitter split-orientation="horizontal" split-proportion="0.28993368">
+      <split-first>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+          <file leaf-file-name="ConfigRX.ts" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/ConfigRX.ts">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="311">
+                  <caret line="73" column="5" lean-forward="true" selection-start-line="73" selection-start-column="5" selection-end-line="73" selection-end-column="5" />
+                  <folding>
+                    <element signature="n#!!block;n#Configuration#0" expanded="false" />
+                    <element signature="e#492#549#0" expanded="false" />
+                    <element signature="n#!!block;n#timeout#0;n#!!block;n#Configuration#0" expanded="false" />
+                    <element signature="n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+                    <element signature="n#!!block;n#origin#0;n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+                    <element signature="n#!!block;n#router#0;n#!!block;n#Configuration#0" expanded="false" />
+                    <element signature="n#!!block;n#request#0;n#!!block;n#Configuration#0" expanded="false" />
+                    <element signature="n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+                    <element signature="n#!!block;n#stringify#0;n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+                    <element signature="e#1536#1593#0" expanded="false" />
+                    <element signature="e#2008#2027#0" expanded="true" />
+                    <element signature="e#2163#2248#0" expanded="false" />
+                    <element signature="e#2371#2412#0" expanded="false" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Http.ts" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/servers/Http.ts">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="267">
+                  <caret line="72" column="57" lean-forward="true" selection-start-line="72" selection-start-column="57" selection-end-line="72" selection-end-column="57" />
+                  <folding>
+                    <element signature="e#1035#1366#0" expanded="true" />
+                    <element signature="e#1527#1797#0" expanded="true" />
+                    <element signature="e#2023#2178#0" expanded="true" />
+                    <element signature="e#2418#2490#0" expanded="true" />
+                    <element signature="e#2551#2593#0" expanded="true" />
+                    <element signature="e#3036#3407#0" expanded="true" />
+                    <element signature="e#3614#4022#0" expanded="true" />
+                    <element signature="n#!!block;n#error#0;n#Http#0" expanded="true" />
+                    <element signature="n#!!block;n#complete#0;n#Http#0" expanded="true" />
+                    <element signature="n#!!block;n#_getListeners#0;n#Http#0" expanded="true" />
+                    <element signature="e#4680#4913#0" expanded="true" />
+                    <element signature="n#!!block;n#_defaultListening#0;n#Http#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="template.ts" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/NOCOMPILE/routes/template.ts">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="465">
+                  <caret line="31" column="0" lean-forward="true" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+                  <folding>
+                    <element signature="e#323#357#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file leaf-file-name="MatchString.ts" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/common/MatchString.ts">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="420">
+                  <caret line="51" column="11" lean-forward="false" selection-start-line="51" selection-start-column="11" selection-end-line="51" selection-end-column="11" />
+                  <folding>
+                    <element signature="e#303#471#0" expanded="false" />
+                    <element signature="n#!!block;n#validPath#0;n#MS#0" expanded="true" />
+                    <element signature="e#1255#1349#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Route.ts" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/routing/Route.ts">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="330">
+                  <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+                  <folding>
+                    <element signature="e#471#522#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Router.ts" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/routing/Router.ts">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="212">
+                  <caret line="126" column="70" lean-forward="true" selection-start-line="126" selection-start-column="70" selection-end-line="126" selection-end-column="70" />
+                  <folding>
+                    <element signature="n#!!block;n#constructor#0;n#Router#0" expanded="true" />
+                    <element signature="n#!!block;n#configureRouter#0;n#Router#0" expanded="true" />
+                    <element signature="e#2631#2876#0" expanded="true" />
+                    <element signature="e#3859#4256#0" expanded="true" />
+                    <element signature="e#4012#4229#0" expanded="false" />
+                    <element signature="e#4053#4116#0" expanded="false" />
+                    <element signature="e#4151#4223#0" expanded="false" />
+                    <element signature="e#4362#4426#0" expanded="false" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>MethodHandler</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Matthew Keil &lt;mattheweliaskeil@gmail.com&gt;" />
+      </list>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/tsconfig.json" />
+        <option value="$PROJECT_DIR$/src/messages/headers/Cors.ts" />
+        <option value="$PROJECT_DIR$/src/messages/headers/Headers.ts" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/routes/template.ts" />
+        <option value="$PROJECT_DIR$/src/routing/Route.ts" />
+        <option value="$PROJECT_DIR$/src/common/ApiError.ts" />
+        <option value="$PROJECT_DIR$/src/common/MatchString.ts" />
+        <option value="$PROJECT_DIR$/src/ConfigRX.ts" />
+        <option value="$PROJECT_DIR$/src/servers/Http.ts" />
+        <option value="$PROJECT_DIR$/src/routing/Router.ts" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER">
+    <package-json value="$PROJECT_DIR$/package.json" />
+  </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="NodeModulesDirectoryManager">
+    <handled-path value="$PROJECT_DIR$/node_modules" />
+  </component>
+  <component name="ProjectFrameBounds" fullScreen="true">
+    <option name="width" value="1680" />
+    <option name="height" value="1050" />
+  </component>
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="ServeRx" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ServeRx" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ServeRx" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ServeRx" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ServeRx" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ServeRx" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="common" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ServeRx" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ServeRx" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="routing" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ServeRx" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ServeRx" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="routing" type="462c0819:PsiDirectoryNode" />
+              <item name="Route.ts" type="620a8d5e:NestingTreeNode" />
+            </path>
+            <path>
+              <item name="ServeRx" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ServeRx" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="routing" type="462c0819:PsiDirectoryNode" />
+              <item name="Router.ts" type="620a8d5e:NestingTreeNode" />
+            </path>
+            <path>
+              <item name="ServeRx" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ServeRx" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="servers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="ServeRx" type="b2602c69:ProjectViewProjectNode" />
+              <item name="ServeRx" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="servers" type="462c0819:PsiDirectoryNode" />
+              <item name="Http.ts" type="620a8d5e:NestingTreeNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="HbShouldOpenHtmlAsHb" value="" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.TypeScript" />
+    <property name="javascript.nodejs.core.library.configured.version" value="9.3.0" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.tslint" value="" />
+    <property name="nodejs_interpreter_path" value="$PROJECT_DIR$/node_modules/node/bin/node" />
+    <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6bca16ef-1415-4b1b-93de-20fb6ebd701e" name="Default" comment="" />
+      <created>1513846621253</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1513846621253</updated>
+      <workItem from="1513846623431" duration="1035000" />
+      <workItem from="1513853102535" duration="423000" />
+      <workItem from="1513853549406" duration="605000" />
+      <workItem from="1513854302352" duration="300000" />
+      <workItem from="1513854616112" duration="2491000" />
+      <workItem from="1513857681528" duration="329000" />
+      <workItem from="1513858386793" duration="961000" />
+      <workItem from="1513955922587" duration="4091000" />
+      <workItem from="1514042918306" duration="2253000" />
+      <workItem from="1514061797342" duration="2040000" />
+      <workItem from="1514222220891" duration="3725000" />
+      <workItem from="1514236187697" duration="1541000" />
+      <workItem from="1514313402507" duration="80988000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="100782000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22684704" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298647" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Regex Tester" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23829344" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20291363" sideWeight="0.5045208" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298647" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18730488" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="TypeScript" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19667013" sideWeight="0.4954792" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21097046" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39958376" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+    <layout-to-restore>
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22684704" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Regex Tester" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23829344" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20291363" sideWeight="0.5045208" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18730488" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="TypeScript" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19667013" sideWeight="0.4954792" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21097046" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39958376" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+    </layout-to-restore>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+    <option name="exactExcludedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/00-otherServers/express/utils.js" />
+        <option value="$PROJECT_DIR$/00-otherServers/express/application.js" />
+        <option value="$PROJECT_DIR$/00-otherServers/express/view.js" />
+        <option value="$PROJECT_DIR$/00-otherServers/restify/response.js" />
+        <option value="$PROJECT_DIR$/00-otherServers/express/router/route.js" />
+        <option value="$PROJECT_DIR$/00-otherServers/express/router/index.js" />
+        <option value="$PROJECT_DIR$/00-otherServers/express/router/layer.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/messages/headers/Content.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/messages/headers/Headers.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/messages/headers/Base.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/messages/headers/Authentication.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/messages/headers/Conditional.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/messages/headers/Cookie.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/messages/headers/Client.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/messages/headers/Cache.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/messages/headers/Cors.js" />
+        <option value="$PROJECT_DIR$/src/messages/headers/Headers.js" />
+        <option value="$PROJECT_DIR$/src/messages/headers/Content.js" />
+        <option value="$PROJECT_DIR$/src/messages/headers/Cors.spec.js" />
+        <option value="$PROJECT_DIR$/src/messages/headers/Cors.js" />
+        <option value="$PROJECT_DIR$/src/messages/headers/Headers.spec.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/test.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/test.spec.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/TEMPLATE - Route.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/messages/Request.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/messages/Response.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/handlers/Pool.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/handlers/Socket.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/handlers/Upgrade.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/servers/Http.spec.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/servers/WsR.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/servers/HttpsR.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/servers/events.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/servers/Wss.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/routes/RouteR.js" />
+        <option value="$PROJECT_DIR$/NOCOMPILE/routes/template.js" />
+        <option value="$PROJECT_DIR$/src/ConfigRX.js" />
+        <option value="$PROJECT_DIR$/src/messages/Request.js" />
+        <option value="$PROJECT_DIR$/src/messages/Response.js" />
+        <option value="$PROJECT_DIR$/src/messages/Request.spec.js" />
+        <option value="$PROJECT_DIR$/src/messages/Message.js" />
+        <option value="$PROJECT_DIR$/src/handlers/ConnectionHandler.js" />
+        <option value="$PROJECT_DIR$/src/handlers/Handler.spec.js" />
+        <option value="$PROJECT_DIR$/src/handlers/HttpHandler.js" />
+        <option value="$PROJECT_DIR$/src/common/CaseChange.js" />
+        <option value="$PROJECT_DIR$/src/common/CaseChange.spec.js" />
+        <option value="$PROJECT_DIR$/src/common/Helpers.js" />
+        <option value="$PROJECT_DIR$/src/common/ApiError.js" />
+        <option value="$PROJECT_DIR$/src/common/MatchString.js" />
+        <option value="$PROJECT_DIR$/src/common/User.js" />
+        <option value="$PROJECT_DIR$/src/servers/Http.js" />
+        <option value="$PROJECT_DIR$/src/routing/Router.js" />
+        <option value="$PROJECT_DIR$/src/routing/Route.js" />
+      </list>
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Router and Config progress" />
+    <option name="LAST_COMMIT_MESSAGE" value="Router and Config progress" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="13" />
+    </breakpoint-manager>
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/ConfigRX.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#492#549#0" expanded="false" />
+            <element signature="n#!!block;n#timeout#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#origin#0;n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#router#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#request#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#stringify#0;n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#1536#1593#0" expanded="false" />
+            <element signature="e#2008#2027#0" expanded="true" />
+            <element signature="e#2163#2248#0" expanded="false" />
+            <element signature="e#2371#2412#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="12" column="33" lean-forward="false" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ConfigRX.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#492#549#0" expanded="false" />
+            <element signature="n#!!block;n#timeout#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#origin#0;n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#router#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#request#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#stringify#0;n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#1536#1593#0" expanded="false" />
+            <element signature="e#2008#2027#0" expanded="true" />
+            <element signature="e#2163#2248#0" expanded="false" />
+            <element signature="e#2371#2412#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/messages/headers/Headers.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="840">
+          <caret line="60" column="20" lean-forward="false" selection-start-line="60" selection-start-column="20" selection-end-line="60" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ConfigRX.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#492#549#0" expanded="false" />
+            <element signature="n#!!block;n#timeout#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#origin#0;n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#router#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#request#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#stringify#0;n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#1536#1593#0" expanded="false" />
+            <element signature="e#2008#2027#0" expanded="true" />
+            <element signature="e#2163#2248#0" expanded="false" />
+            <element signature="e#2371#2412#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="884">
+          <caret line="52" column="29" lean-forward="false" selection-start-line="52" selection-start-column="29" selection-end-line="52" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/messages/headers/Headers.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="52" column="18" lean-forward="false" selection-start-line="52" selection-start-column="18" selection-end-line="52" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/messages/headers/Cors.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1717">
+          <caret line="107" column="73" lean-forward="true" selection-start-line="107" selection-start-column="73" selection-end-line="107" selection-end-column="73" />
+          <folding>
+            <element signature="e#0#26#0" expanded="false" />
+            <element signature="e#1189#1292#0" expanded="false" />
+            <element signature="e#2591#3199#0" expanded="false" />
+            <element signature="e#3374#3981#0" expanded="false" />
+            <element signature="e#4188#4262#0" expanded="false" />
+            <element signature="e#4269#5134#0" expanded="false" />
+            <element signature="e#4605#4912#0" expanded="false" />
+            <element signature="e#5141#5374#0" expanded="false" />
+            <element signature="e#5419#5523#0" expanded="false" />
+            <element signature="e#5572#5664#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ConfigRX.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#492#549#0" expanded="false" />
+            <element signature="n#!!block;n#timeout#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#origin#0;n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#router#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#request#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#stringify#0;n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#1536#1593#0" expanded="false" />
+            <element signature="e#2008#2027#0" expanded="true" />
+            <element signature="e#2163#2248#0" expanded="false" />
+            <element signature="e#2371#2412#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/messages/headers/Headers.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="52" column="18" lean-forward="false" selection-start-line="52" selection-start-column="18" selection-end-line="52" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="884">
+          <caret line="52" column="29" lean-forward="true" selection-start-line="52" selection-start-column="29" selection-end-line="52" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/messages/headers/Cors.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#26#0" expanded="false" />
+            <element signature="e#1189#1292#0" expanded="false" />
+            <element signature="e#2591#3199#0" expanded="false" />
+            <element signature="e#3374#3981#0" expanded="false" />
+            <element signature="e#4188#4262#0" expanded="false" />
+            <element signature="e#4269#5134#0" expanded="false" />
+            <element signature="e#4605#4912#0" expanded="false" />
+            <element signature="e#5141#5374#0" expanded="false" />
+            <element signature="e#5419#5523#0" expanded="false" />
+            <element signature="e#5572#5664#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.editorconfig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ConfigRX.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#492#549#0" expanded="false" />
+            <element signature="n#!!block;n#timeout#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#origin#0;n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#router#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#request#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#stringify#0;n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#1536#1593#0" expanded="false" />
+            <element signature="e#2008#2027#0" expanded="true" />
+            <element signature="e#2163#2248#0" expanded="false" />
+            <element signature="e#2371#2412#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/messages/headers/Cors.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#26#0" expanded="false" />
+            <element signature="e#1189#1292#0" expanded="false" />
+            <element signature="e#2591#3199#0" expanded="false" />
+            <element signature="e#3374#3981#0" expanded="false" />
+            <element signature="e#4188#4262#0" expanded="false" />
+            <element signature="e#4269#5134#0" expanded="false" />
+            <element signature="e#4605#4912#0" expanded="false" />
+            <element signature="e#5141#5374#0" expanded="false" />
+            <element signature="e#5419#5523#0" expanded="false" />
+            <element signature="e#5572#5664#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/messages/headers/Headers.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="22" lean-forward="false" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.editorconfig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ConfigRX.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#492#549#0" expanded="false" />
+            <element signature="n#!!block;n#timeout#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#origin#0;n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#router#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#request#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#stringify#0;n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#1536#1593#0" expanded="false" />
+            <element signature="e#2008#2027#0" expanded="true" />
+            <element signature="e#2163#2248#0" expanded="false" />
+            <element signature="e#2371#2412#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/messages/headers/Cors.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#26#0" expanded="false" />
+            <element signature="e#1189#1292#0" expanded="false" />
+            <element signature="e#2591#3199#0" expanded="false" />
+            <element signature="e#3374#3981#0" expanded="false" />
+            <element signature="e#4188#4262#0" expanded="false" />
+            <element signature="e#4269#5134#0" expanded="false" />
+            <element signature="e#4605#4912#0" expanded="false" />
+            <element signature="e#5141#5374#0" expanded="false" />
+            <element signature="e#5419#5523#0" expanded="false" />
+            <element signature="e#5572#5664#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/messages/headers/Headers.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="22" column="12" lean-forward="false" selection-start-line="22" selection-start-column="12" selection-end-line="22" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.editorconfig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ConfigRX.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#492#549#0" expanded="false" />
+            <element signature="n#!!block;n#timeout#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#origin#0;n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#router#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#request#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#stringify#0;n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#1536#1593#0" expanded="false" />
+            <element signature="e#2008#2027#0" expanded="true" />
+            <element signature="e#2163#2248#0" expanded="false" />
+            <element signature="e#2371#2412#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/messages/headers/Cors.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#26#0" expanded="false" />
+            <element signature="e#1189#1292#0" expanded="false" />
+            <element signature="e#2591#3199#0" expanded="false" />
+            <element signature="e#3374#3981#0" expanded="false" />
+            <element signature="e#4188#4262#0" expanded="false" />
+            <element signature="e#4269#5134#0" expanded="false" />
+            <element signature="e#4605#4912#0" expanded="false" />
+            <element signature="e#5141#5374#0" expanded="false" />
+            <element signature="e#5419#5523#0" expanded="false" />
+            <element signature="e#5572#5664#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/messages/headers/Headers.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.editorconfig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ConfigRX.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#492#549#0" expanded="false" />
+            <element signature="n#!!block;n#timeout#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#origin#0;n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#router#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#request#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#stringify#0;n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#1536#1593#0" expanded="false" />
+            <element signature="e#2008#2027#0" expanded="true" />
+            <element signature="e#2163#2248#0" expanded="false" />
+            <element signature="e#2371#2412#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/messages/headers/Cors.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#26#0" expanded="false" />
+            <element signature="e#1189#1292#0" expanded="false" />
+            <element signature="e#2591#3199#0" expanded="false" />
+            <element signature="e#3374#3981#0" expanded="false" />
+            <element signature="e#4188#4262#0" expanded="false" />
+            <element signature="e#4269#5134#0" expanded="false" />
+            <element signature="e#4605#4912#0" expanded="false" />
+            <element signature="e#5141#5374#0" expanded="false" />
+            <element signature="e#5419#5523#0" expanded="false" />
+            <element signature="e#5572#5664#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/messages/headers/Headers.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.editorconfig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="52" column="29" lean-forward="false" selection-start-line="52" selection-start-column="29" selection-end-line="52" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/messages/headers/Cors.spec.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tsconfig.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="33" lean-forward="true" selection-start-line="5" selection-start-column="33" selection-end-line="5" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/messages/headers/Cors.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-25">
+          <caret line="116" column="41" lean-forward="true" selection-start-line="116" selection-start-column="41" selection-end-line="116" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#26#0" expanded="false" />
+            <element signature="e#1189#1292#0" expanded="false" />
+            <element signature="e#2591#3199#0" expanded="false" />
+            <element signature="e#3374#3981#0" expanded="false" />
+            <element signature="e#4188#4262#0" expanded="false" />
+            <element signature="e#4269#5134#0" expanded="false" />
+            <element signature="e#4605#4912#0" expanded="false" />
+            <element signature="e#5141#5374#0" expanded="false" />
+            <element signature="e#5419#5523#0" expanded="false" />
+            <element signature="e#5572#5664#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/messages/headers/Headers.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="362">
+          <caret line="76" column="63" lean-forward="true" selection-start-line="76" selection-start-column="63" selection-end-line="76" selection-end-column="63" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="33" lean-forward="false" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/routing/Router.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/routing/Route.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="41" lean-forward="true" selection-start-line="3" selection-start-column="41" selection-end-line="3" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/servers/Http.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/ApiError.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="22" lean-forward="true" selection-start-line="22" selection-start-column="22" selection-end-line="22" selection-end-column="22" />
+          <folding>
+            <element signature="e#524#972#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/NOCOMPILE/routes/template.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="31" column="0" lean-forward="true" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+          <folding>
+            <element signature="e#323#357#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/MatchString.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="51" column="11" lean-forward="false" selection-start-line="51" selection-start-column="11" selection-end-line="51" selection-end-column="11" />
+          <folding>
+            <element signature="e#303#471#0" expanded="false" />
+            <element signature="n#!!block;n#validPath#0;n#MS#0" expanded="true" />
+            <element signature="e#1255#1349#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ConfigRX.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="311">
+          <caret line="73" column="5" lean-forward="true" selection-start-line="73" selection-start-column="5" selection-end-line="73" selection-end-column="5" />
+          <folding>
+            <element signature="n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#492#549#0" expanded="false" />
+            <element signature="n#!!block;n#timeout#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#origin#0;n#!!block;n#headers#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#router#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#request#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="n#!!block;n#stringify#0;n#!!block;n#response#0;n#!!block;n#Configuration#0" expanded="false" />
+            <element signature="e#1536#1593#0" expanded="false" />
+            <element signature="e#2008#2027#0" expanded="true" />
+            <element signature="e#2163#2248#0" expanded="false" />
+            <element signature="e#2371#2412#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/servers/Http.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="72" column="57" lean-forward="true" selection-start-line="72" selection-start-column="57" selection-end-line="72" selection-end-column="57" />
+          <folding>
+            <element signature="e#1035#1366#0" expanded="true" />
+            <element signature="e#1527#1797#0" expanded="true" />
+            <element signature="e#2023#2178#0" expanded="true" />
+            <element signature="e#2418#2490#0" expanded="true" />
+            <element signature="e#2551#2593#0" expanded="true" />
+            <element signature="e#3036#3407#0" expanded="true" />
+            <element signature="e#3614#4022#0" expanded="true" />
+            <element signature="n#!!block;n#error#0;n#Http#0" expanded="true" />
+            <element signature="n#!!block;n#complete#0;n#Http#0" expanded="true" />
+            <element signature="n#!!block;n#_getListeners#0;n#Http#0" expanded="true" />
+            <element signature="e#4680#4913#0" expanded="true" />
+            <element signature="n#!!block;n#_defaultListening#0;n#Http#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/routing/Route.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding>
+            <element signature="e#471#522#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/routing/Router.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="212">
+          <caret line="126" column="70" lean-forward="true" selection-start-line="126" selection-start-column="70" selection-end-line="126" selection-end-column="70" />
+          <folding>
+            <element signature="n#!!block;n#constructor#0;n#Router#0" expanded="true" />
+            <element signature="n#!!block;n#configureRouter#0;n#Router#0" expanded="true" />
+            <element signature="e#2631#2876#0" expanded="true" />
+            <element signature="e#3859#4256#0" expanded="true" />
+            <element signature="e#4012#4229#0" expanded="false" />
+            <element signature="e#4053#4116#0" expanded="false" />
+            <element signature="e#4151#4223#0" expanded="false" />
+            <element signature="e#4362#4426#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="regexState">
+    <option name="map">
+      <map>
+        <entry key="flags" value="0" />
+        <entry key="mode" value="0" />
+        <entry key="regex" value="(19||20)\d\d([- /.])(0[1-9]||1[012])\2(0[1-9]||[12][0-9]||3[01])" />
+        <entry key="text" value="1900-01-01 2007/08/13 1900.01.01 1900 01 01 1900-01.01 1900 13 01 1900 02 31" />
+      </map>
+    </option>
+  </component>
+</project>
