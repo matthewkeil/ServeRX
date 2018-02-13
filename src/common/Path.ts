@@ -2,7 +2,6 @@
 
 import { isArray, isString, isError, isNull, isUndefined } from 'util';
 
-
 import { Handler } from '../routing';
 
 import {
@@ -22,59 +21,11 @@ type Match = Path.Match;
 
 export class Path extends Array<Segment> {
 
-	static ValidIdentifier = /^:?[-\w]*$/;
-	static ValidSegment = /^\/?(:?)([-\w]+)(?:=([^\/]*))?\/?$/;
+
 	static ValidPath = /^(~?)(?:\/?([^~?#/\/]*))*$/;
 
 	/**     */
-	static validateIdentifier = (arg: any): PathError | Identifier | undefined => {
-		if (isString(arg)) {
-			return Path.ValidIdentifier.test(arg)
-				? <Identifier>arg
-				: new PathError('invalid identifier', arg);
-		}
-		return undefined;
-	}
-	static validateSegment(arg: any): PathError | Segment | undefined {
 
-		if (isString(arg)) {
-
-			if (arg === '~') return '~';
-
-			let results = <null | [string, string, string, string]>Path.ValidSegment.exec(arg);
-
-			if (results === null) return undefined
-
-			let [input, param, identifier, value] = results;
-
-			return !(param === ':') && !value
-				? <Identifier>identifier
-				: value
-					? <Parameter>[`:${identifier}`, value]
-					: <Parameter>[`:${identifier}`, null];
-		}
-
-		if (isArray(arg) && (arg.length === 2)) {
-
-			let identifier = arg[0];
-			let value = arg[1];
-
-			if (isString(identifier)
-				&& identifier.startsWith(':')
-				&& (isNull(value) || isUndefined(value) || isString(value))) {
-
-				let test = Path.validateIdentifier(identifier);
-
-				return test && !(test instanceof Error)
-					? [test, value]
-					: test || new PathError('invalid identifier', identifier);
-			}
-
-			return undefined
-		}
-
-		return undefined
-	}
 	static validate(arg: any, create = true): PathError | Segment[] | Path | undefined {
 
 		if (arg instanceof Path) return arg;
@@ -227,12 +178,8 @@ export class Path extends Array<Segment> {
 export namespace Path {
 	export type OverlapIndex = number;
 	export type BranchIndex = number;
-	export type Identifier = string;
-	export type ParamValue = null | undefined | string;
-	export type Parameter = [Identifier, ParamValue];
-	export type Segment = Identifier | Parameter;
+
 	export type MatchString = string | Parameter | Segment[] | Path;
-	export type Results = 'no' | 'yes' | 'maybe' | 'value' | 'check' | 'star';
 	export type Match = [Results[], undefined | Path | Error];
 
 }
