@@ -25,7 +25,7 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 	public static ValidValue: RegExp      = /=?([^\/]*)\/?$/;
 	public static ValidSegment: RegExp    = /^(~)|(?:\/?(:?)([-\w]+)(?:=([^\/]*))?\/?)$/;
 
-	public static validateId = (arg: any): Identifier | PathError => {
+	public static validateId    = (arg: any): Identifier | PathError => {
 		let id: null | RegExpExecArray;
 		if (isString(arg))
 			return (id = Segment.ValidIdentifier.exec(arg))
@@ -34,7 +34,6 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 
 		return new PathError('invalid segment identifier type', arg);
 	};
-
 	public static validateValue = (arg: any): Value | PathError => {
 
 		if (isUndefined(arg) || isNull(arg)) return arg;
@@ -61,8 +60,7 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 
 		return new PathError('value must be a valid string, null or undefined', arg);
 	};
-
-	public static validate = (arg: any): undefined | ISegment | PathError => {
+	public static validate      = (arg: any): undefined | ISegment | PathError => {
 
 		if (arg instanceof Segment) return [arg[0], arg[1]];
 
@@ -106,8 +104,7 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 
 		return undefined;
 	};
-
-	public static match = (path: string | Segment, here: string | Segment): Match => {
+	public static match         = (path: string | Segment, here: string | Segment): Match => {
 
 		let results = Segment.validate(path);
 		if (isError(results)) return new PathError('path is invalid', path);
@@ -170,6 +167,16 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 	get isParam(): boolean {
 		return !isNull(this[1]);
 	};
+
+	constructor(arg: any) {
+		super();
+
+		let results = Segment.validate(arg);
+
+		if (!results || isError(results)) throw results || new PathError('cannot build an invalid segment', arg);
+
+		[this[0], this[1]] = results;
+	}
 
 	public match = (path: string | Segment) => Segment.match(path, this);
 }
