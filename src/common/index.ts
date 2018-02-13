@@ -1,6 +1,4 @@
-
-
-export { CaseChange } from "./CaseChange";
+export {CaseChange} from './CaseChange';
 export {
 	StackError,
 	ApiError,
@@ -8,5 +6,6 @@ export {
 	PathError,
 	ServerError,
 	HandlerError
-} from "./Errors";
-export { Path } from "./Path";
+}                   from './Errors';
+export {Path}       from './Path';
+export {Segment}    from './Segment';
