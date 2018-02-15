@@ -4,10 +4,8 @@ import {
 	isError
 } from 'util';
 
-import {
-	Segment,
-	PathError
-} from './';
+import {Segment} from './Segment';
+import {	PathError} from './Errors';
 
 type Input = Path.Input;
 type Match = Path.Match;

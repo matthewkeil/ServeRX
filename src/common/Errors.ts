@@ -118,21 +118,14 @@ export class AuthError extends ServeRxError {
 		});
 	}
 }
-export class PathError extends ServeRxError {
-	constructor(message: string, path?: any | any[], ...args: any[]) {
-		super({
-			message,
-			auth: [],
-			fatal: true,
-			code: -1,
-			error: [],
-			path: [...isArray(path) ? path : [path]],
-			_stack: [],
-			handler: [],
-			other: [...args]
-		});
+export class PathError extends Error {
+	public other?: any[];
+	constructor(message: string, public path?: any | any[], ...other: any[]) {
+		super(message);
+		if (other) this.other = other;
 	}
 }
+
 export class StackError extends ServeRxError {
 	constructor(message: string, stack?: any | any[], ...args: any[]) {
 		super({

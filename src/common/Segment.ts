@@ -6,7 +6,8 @@ import {
 	isUndefined
 } from 'util';
 
-import {PathError} from './';
+import {PathError} from './Errors';
+
 
 
 type ISegment = Segment.ISegment;
@@ -16,15 +17,15 @@ type Match = Segment.Match;
 
 export class Segment extends Array<Identifier | Value> implements ISegment {
 
-	public static ValidIdentifier: RegExp = /^~|(?:\/?:?([-\w]+))$/;
-	public static ValidValue: RegExp      = /=?([^\/]*)\/?$/;
-	public static ValidSegment: RegExp    = /^(~)|(?:\/?(:?)([-\w]+)(?:=([^\/]*))?\/?)$/;
+	public static ValidIdentifier: RegExp = /^(~)|(?:\/?:?([-\w]+)=?)/;
+	public static ValidValue: RegExp      = /^(?:\/?:?[-\w]+=)?([^\/]*)\/?/;
+	public static ValidSegment: RegExp    = /^(~)|^(?:\/?(:?)([-\w]+)(?:(=)([^\/]*))?)\/?$/;
 
 	public static validId    = (arg: any): Identifier | PathError => {
 		let id: null | RegExpExecArray;
 		if (isString(arg))
 			return (id = Segment.ValidIdentifier.exec(arg))
-				? id[1]
+				? id[3]
 				: new PathError('invalid identifier string', arg);
 
 		return new PathError('invalid segment identifier type', arg);
@@ -187,4 +188,49 @@ export namespace Segment {
 	export type Value = null | undefined | string;
 	export type Result = 'no' | 'yes' | 'maybe' | 'value';
 	export type Match = Result | PathError;
+
+	export namespace RegExp {
+
+		export type IdResult = [string, string];
+
+		export type ValResult = [string, string];
+
+		export type SegResult =
+			SegmentResult.Root |
+			SegmentResult.Route |
+			SegmentResult.Star |
+			SegmentResult.Value;
+
+		export namespace SegmentResult {
+			export type Root = [
+				string,
+				string,
+				undefined,
+				undefined,
+				undefined,
+				undefined]
+			export type Route = [
+				string,
+				undefined,
+				string,
+				string,
+				undefined,
+				undefined]
+			export type Star = [
+				string,
+				undefined,
+				string,
+				string,
+				undefined,
+				undefined]
+			export type Value = [
+				string,
+				undefined,
+				string,
+				string,
+				string,
+				string];
+		}
+
+	}
 }
