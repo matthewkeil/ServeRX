@@ -71,11 +71,16 @@ describe('Segment', function () {
 				expect(Segment.ValidValue.exec(val)).to.deep.equal(results());
 			});
 
+			it('should return a valid result for an empty string', function () {
+				val    = '';
+				result = {val};
+				expect(Segment.ValidValue.exec('')).to.deep.equal(results());
+			});
+
 			it('should start at an equal sign if it passes a valid identifier', function () {
-				let input = 'wham=bam';
-				val       = 'wham=bam';
-				result    = {val: 'bam'};
-				expect(Segment.ValidValue.exec(input)).to.deep.equal(results());
+				val    = 'wham=bam';
+				result = {val: 'bam'};
+				expect(Segment.ValidValue.exec(val)).to.deep.equal(results());
 			});
 
 			it('should stop at a trailing slash', function () {
@@ -89,14 +94,14 @@ describe('Segment', function () {
 
 		describe('ValidSegment', function () {
 
-			let input   = '~';
-			let root    = '~';
-			let noParam = '';
-			let param   = ':';
+			let input        = '~';
+			let root         = '~';
+			let noParam: any = undefined;
+			let param        = ':';
 			let id;
-			let eq      = '=';
+			let eq           = '=';
 			let val;
-			let index   = 0;
+			let index        = 0;
 
 			type Result = {
 				root?: string;
@@ -173,6 +178,11 @@ describe('Segment', function () {
 	describe('static methods', function () {
 
 		describe('validId()', function () {
+
+			it('should recognize the root character', function () {
+				expect(Segment.validId('~')).to.equal('~');
+			});
+
 			it('should only return a value for strings', function () {
 				try {
 					expect(Segment.validId(3)).to.throw;
@@ -190,6 +200,98 @@ describe('Segment', function () {
 				} catch (err) {
 					expect(err).to.be.an.instanceof(PathError);
 				}
+			});
+		});
+
+		describe('validValue()', function () {
+			it('should return an error for invalid values', function () {
+				try {
+					expect(Segment.validValue(3)).to.throw;
+					expect(Segment.validValue({})).to.throw;
+					expect(Segment.validValue(['identifier'])).to.throw;
+					expect(Segment.validValue(true)).to.throw;
+				} catch (err) {
+					expect(err).to.be.an.instanceof(PathError);
+				}
+			});
+
+			it('return null for null and string value of "null', function () {
+				expect(Segment.validValue('null')).to.be.null;
+				expect(Segment.validValue(null)).to.be.null;
+			});
+
+			it('return undefined for undefined and string value of "undef" and "undefined"', function () {
+				expect(Segment.validValue('undef')).to.be.undefined;
+				expect(Segment.validValue('undefined')).to.be.undefined;
+				expect(Segment.validValue(undefined)).to.be.undefined;
+			});
+		});
+
+		describe('valid()', function () {
+
+			describe('should return an error', function () {
+				// it('if a valid id is found but there is an invalid value', function () {
+				// 	try {
+				// 		expect(Segment.valid(3)).to.throw;
+				// 	} catch (err) {
+				// 		expect(err).to.be.an.instanceof(PathError);
+				// 	}
+				//
+				// 	try {
+				// 		expect(Segment.valid(3)).to.throw;
+				// 	} catch (err) {
+				// 		expect(err).to.be.an.instanceof(PathError);
+				// 	}
+				// });
+				// it('there is a id/val isParam mismatch', function () {
+				// 	try {
+				// 		expect(Segment.valid(3)).to.throw;
+				// 	} catch (err) {
+				// 		expect(err).to.be.an.instanceof(PathError);
+				// 	}
+				// });
+			});
+
+			it('should recognize Segment instance', function () {
+				expect(Segment.valid(new Segment(['~', null]))).to.deep.equal(['~', null]);
+			});
+		describe('should recognize strings', function () {
+				let seg: string    = 'users';
+				let SEG: Segment.I = ['users', null];
+
+				it('should capture valid string identifiers', function () {
+					expect(Segment.valid(seg)).to.deep.equal(SEG);
+				});
+
+				it('should ignore preceding and trailing slashes', function () {
+					seg     = '/users/';
+					SEG     = ['users', null];
+					expect(Segment.valid(seg)).to.deep.equal(SEG);
+				});
+
+				it('should recognize star parameters', function () {
+					seg     = ':users';
+					SEG     = [':users', '*'];
+					expect(Segment.valid(seg)).to.deep.equal(SEG);
+				});
+
+				it('should recognize parameters with values', function () {
+					seg     = 'users=mkeil';
+					SEG     = [':users', 'mkeil'];
+					expect(Segment.valid(seg)).to.deep.equal(SEG);
+
+					seg     = '/:users=mkeil/';
+					SEG     = [':users', 'mkeil'];
+					expect(Segment.valid(seg)).to.deep.equal(SEG);
+
+					seg     = 'users=';
+					SEG     = [':users', undefined];
+					expect(Segment.valid(seg)).to.deep.equal(SEG);
+				});
+			});
+
+			describe('should recognize Segment.I\'s', function () {
+
 			});
 		});
 	});
@@ -212,38 +314,7 @@ describe('Segment', function () {
 // 		let seg: string;
 // 		let SEG: Segment;
 //
-// 		it('should capture valid string identifiers', function () {
-// 			seg     = 'users';
-// 			SEG     = 'users';
-// 			results = Segment.valid(seg);
-// 			expect(results).to.equal(SEG);
-// 		});
-//
-// 		it('should ignore preceding and trailing slashes', function () {
-// 			seg     = '/users/';
-// 			SEG     = 'users';
-// 			results = Segment.valid(seg);
-// 			expect(results).to.equal(SEG);
-// 		});
-//
-// 		it('should recognize star parameters', function () {
-// 			seg     = ':users';
-// 			SEG     = [':users', null];
-// 			results = Segment.valid(seg);
-// 			expect(results).to.deep.equal(SEG);
-// 		});
-//
-// 		it('should recognize parameters with values', function () {
-// 			seg     = 'users=mkeil';
-// 			SEG     = [':users', 'mkeil'];
-// 			results = Segment.valid(seg);
-// 			expect(results).to.deep.equal(SEG);
-//
-// 			seg     = '/:users=mkeil/';
-// 			SEG     = [':users', 'mkeil'];
-// 			results = Segment.valid(seg);
-// 			expect(results).to.deep.equal(SEG);
-// 		});
+
 //
 // 	});
 //

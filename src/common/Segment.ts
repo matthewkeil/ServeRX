@@ -19,15 +19,17 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 
 	public static ValidIdentifier: RegExp = /^(~)|(?:\/?:?([-\w]+)=?)/;
 	public static ValidValue: RegExp      = /^(?:\/?:?[-\w]+=)?([^\/]*)\/?/;
-	public static ValidSegment: RegExp    = /^(~)|^(?:\/?(:?)([-\w]+)(?:(=)([^\/]*))?)\/?$/;
+	public static ValidSegment: RegExp    = /^(~)|^(?:\/?(:)?([-\w]+)(?:(=)([^\/]*))?)\/?$/;
 
 	public static validId    = (arg: any): Identifier | PathError => {
 		let id: null | RegExpExecArray;
-		if (isString(arg))
+		if (isString(arg)) {
 			return (id = Segment.ValidIdentifier.exec(arg))
-				? id[3]
+				? id[1]
+						 ? id[1]
+						 : id[2]
 				: new PathError('invalid identifier string', arg);
-
+		}
 		return new PathError('invalid segment identifier type', arg);
 	};
 	public static validValue = (arg: any): Value | PathError => {
@@ -56,7 +58,7 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 
 		return new PathError('value must be a valid string, null or undefined', arg);
 	};
-	public static valid      = (arg: any): undefined | ISegment | PathError => {
+	public static valid      = (arg: any): undefined | Segment.I | PathError => {
 
 		if (arg instanceof Segment) return [arg[0], arg[1]];
 
@@ -66,36 +68,38 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 
 			if (results === null) return undefined;
 
-			let [param, identifier, value] = <[string, string, undefined | string]>results.slice(1);
+			let [root, param, id, eq, value] = <Segment.RegExp.Results>results.slice(1);
 
-			if (param === '~') return ['~', null];
+			if (root) return (param || id || eq || value)
+				? new PathError('root segment cannot have an id or value')
+				: ['~', null];
 
-			let val: Value | PathError = null;
+			let val = eq
+				? Segment.validValue(value)
+				: null;
 
-			if (value) val = Segment.validValue(value);
-			else if (param === ':') val = '*';
+			if (param && isNull(val)) val = '*';
 
 			return isError(val)
 				? val
-				: [param.concat(identifier), val];
+				: [param || eq
+						? `:{id}`
+						: <string>id,
+					val];
 		}
 
 		if (isArray(arg) && (arg.length === 2)) {
 
-			let id  = Segment.validId(arg[0]);
+			let id = Segment.validId(arg[0]);
+			if (isError(id)) return undefined;
+
 			let val = Segment.validValue(arg[1]);
+			if (isError(val)) return val;
 
-			if (!isError(id)) {
+			if (id.startsWith(':') && isNull(val)) return new PathError('parameter values cannot be null');
+			if (!id.startsWith(':') && !isNull(val)) return new PathError('route values must be null');
 
-				if (isError(val)) return val;
-
-				if (id.startsWith(':') && isNull(val)) return new PathError('parameter values cannot be null');
-				if (!id.startsWith(':') && !isNull(val)) return new PathError('route values must be null');
-
-				return [id, val];
-			}
-
-			return undefined;
+			return [id, val];
 		}
 
 		return undefined;
@@ -167,7 +171,10 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 	constructor(arg: any) {
 		super();
 
-		let results = Segment.valid(arg);
+		let results = Segment.valid(
+			arguments.length > 1
+				? [...arguments]
+				: arguments[0]);
 
 		if (!results || isError(results)) throw results || new PathError('cannot build an invalid segment', arg);
 
@@ -191,11 +198,11 @@ export namespace Segment {
 
 	export namespace RegExp {
 
-		export type IdResult = [string, string];
+		export type IdResults = [string, string];
 
-		export type ValResult = [string, string];
+		export type ValResults = [string, string];
 
-		export type SegResult =
+		export type Results =
 			SegmentResult.Root |
 			SegmentResult.Route |
 			SegmentResult.Star |
@@ -204,29 +211,31 @@ export namespace Segment {
 		export namespace SegmentResult {
 			export type Root = [
 				string,
-				string,
 				undefined,
 				undefined,
 				undefined,
 				undefined]
 			export type Route = [
-				string,
 				undefined,
-				string,
+				undefined,
 				string,
 				undefined,
 				undefined]
 			export type Star = [
-				string,
 				undefined,
 				string,
 				string,
 				undefined,
 				undefined]
 			export type Value = [
-				string,
 				undefined,
 				string,
+				string,
+				string,
+				string
+				] | [
+				undefined,
+				undefined,
 				string,
 				string,
 				string];
