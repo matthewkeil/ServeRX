@@ -17,7 +17,7 @@ type Match = Segment.Match;
 
 export class Segment extends Array<Identifier | Value> implements ISegment {
 
-	public static ValidIdentifier: RegExp = /^(~)|(?:\/?:?([-\w]+)=?)/;
+	public static ValidIdentifier: RegExp = /^(~)|(?:\/?(:?[-\w]+)=?)/;
 	public static ValidValue: RegExp      = /^(?:\/?:?[-\w]+=)?([^\/]*)\/?/;
 	public static ValidSegment: RegExp    = /^(~)|^(?:\/?(:)?([-\w]+)(?:(=)([^\/]*))?)\/?$/;
 
@@ -83,7 +83,7 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 			return isError(val)
 				? val
 				: [param || eq
-						? `:{id}`
+						? ':'.concat(<string>id)
 						: <string>id,
 					val];
 		}
@@ -104,23 +104,25 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 
 		return undefined;
 	};
-	public static match      = (path: string | Segment, here: string | Segment): Match => {
+	public static match      = (path: string | Segment.I, here: string | Segment.I): Match => {
 
 		let results = Segment.valid(path);
-		if (isError(results)) return new PathError('path is invalid', path);
+		if (!results || isError(results)) return results || new PathError('path is invalid', path);
+		let _path = results;
 
 		results = Segment.valid(here);
-		if (isError(results)) return new PathError('here is invalid', here);
+		if (!results || isError(results)) return results || new PathError('here is invalid', here);
+		let _here = results;
 
-		if (path === here) return 'yes';
+		if (_path[0] === _here[0] && (_path[1] === _here[1])) return 'yes';
 
-		if (isNull(path[1])) {
+		if (isNull(_path[1])) {
 
-			// matches value param at end of here or a star handler that came in as a value
-			if (here[1] === '*' || isUndefined(here[1])) return 'maybe';
+			// matches value param at end of _here or a star handler that came in as a value
+			if (_here[1] === '*' || isUndefined(_here[1])) return 'maybe';
 
-			// matches value param mid-path
-			if (path[0] === here[1]) return 'value';
+			// matches value param mid-_path
+			if (_path[0] === _here[1]) return 'value';
 		}
 
 		return 'no';
@@ -187,6 +189,7 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 			? 'no'
 			: result;
 	};
+
 }
 export namespace Segment {
 	export type ISegment = [Identifier, Value];
