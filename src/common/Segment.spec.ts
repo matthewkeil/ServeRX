@@ -339,7 +339,7 @@ describe('Segment', function () {
 		});
 
 		describe('match()', function () {
-			it('should return an error for invalid parameter path or here', function () {
+			it('should return an error for invalid parameters', function () {
 				let here = 3;
 				let path = 'valid/path';
 

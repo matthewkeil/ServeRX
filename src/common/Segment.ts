@@ -17,7 +17,7 @@ type Match = Segment.Match;
 
 export class Segment extends Array<Identifier | Value> implements ISegment {
 
-	public static ValidIdentifier: RegExp = /^(~)|(?:\/?(:?[-\w]+)=?)/;
+	public static ValidIdentifier: RegExp = /^(~)$|^(?:\/?(:?[-\w]+)(?:=.*)?)$/;
 	public static ValidValue: RegExp      = /^(?:\/?:?[-\w]+=)?([^\/]*)\/?/;
 	public static ValidSegment: RegExp    = /^(~)|^(?:\/?(:)?([-\w]+)(?:(=)([^\/]*))?)\/?$/;
 
@@ -58,7 +58,7 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 
 		return new PathError('value must be a valid string, null or undefined', arg);
 	};
-	public static valid      = (arg: any): undefined | Segment.I | PathError => {
+	public static valid      = (arg: any): undefined | ISegment | PathError => {
 
 		if (arg instanceof Segment) return [arg[0], arg[1]];
 
@@ -170,7 +170,7 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 		return !isNull(this[1]);
 	};
 
-	constructor(arg: any) {
+	constructor(...args: any[]) {
 		super();
 
 		let results = Segment.valid(
@@ -193,7 +193,7 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 }
 export namespace Segment {
 	export type ISegment = [Identifier, Value];
-	export type I = ISegment;
+	export type I = Segment | ISegment | string;
 	export type Identifier = string;
 	export type Value = null | undefined | string;
 	export type Result = 'no' | 'yes' | 'maybe' | 'value';
