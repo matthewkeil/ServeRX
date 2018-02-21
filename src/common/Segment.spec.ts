@@ -1,4 +1,3 @@
-import 'mocha';
 import {expect}    from 'chai';
 import {PathError} from './';
 import {Segment}   from './index';
@@ -184,22 +183,14 @@ describe('Segment', function () {
 			});
 
 			it('should only return a value for strings', function () {
-				try {
-					expect(Segment.validId(3)).to.throw;
-					expect(Segment.validId({})).to.throw;
-					expect(Segment.validId(['identifier'])).to.throw;
-					expect(Segment.validId(true)).to.throw;
-				} catch (err) {
-					expect(err).to.be.an.instanceof(PathError);
-				}
+				expect(Segment.validId(3)).to.be.instanceof(PathError);
+				expect(Segment.validId({})).to.be.instanceof(PathError);
+				expect(Segment.validId(['identifier'])).to.be.instanceof(PathError);
+				expect(Segment.validId(true)).to.be.instanceof(PathError);
 			});
 
 			it('return an error for invalid strings', function () {
-				try {
-					expect(Segment.validId('&34')).to.throw;
-				} catch (err) {
-					expect(err).to.be.an.instanceof(PathError);
-				}
+				expect(Segment.validId('&34')).to.be.instanceof(PathError);
 			});
 
 			it('should return params with the ":" param denominator', function () {
@@ -209,14 +200,10 @@ describe('Segment', function () {
 
 		describe('validValue()', function () {
 			it('should return an error for invalid values', function () {
-				try {
-					expect(Segment.validValue(3)).to.throw;
-					expect(Segment.validValue({})).to.throw;
-					expect(Segment.validValue(['identifier'])).to.throw;
-					expect(Segment.validValue(true)).to.throw;
-				} catch (err) {
-					expect(err).to.be.an.instanceof(PathError);
-				}
+				expect(Segment.validValue(3)).to.be.instanceof(PathError);
+				expect(Segment.validValue({})).to.be.instanceof(PathError);
+				expect(Segment.validValue(['identifier'])).to.be.instanceof(PathError);
+				expect(Segment.validValue(true)).to.be.instanceof(PathError);
 			});
 
 			it('return null for null and string value of "null', function () {
@@ -252,11 +239,7 @@ describe('Segment', function () {
 				});
 
 				it('should return an error if anything other than "~" is found', function () {
-					try {
-						expect(Segment.valid('~=error')).to.throw;
-					} catch (err) {
-						expect(err).to.be.an.instanceof(PathError);
-					}
+					expect(Segment.valid('~=error')).to.be.undefined;
 				});
 
 				it('should ignore preceding and trailing slashes', function () {
@@ -306,34 +289,13 @@ describe('Segment', function () {
 				it('should return undefined if no valid id (ie. not a Segment Array)', function () {
 					expect((<any>Segment).valid([{}, 'validValue'])).to.be.undefined;
 				});
-
-				it('should return an error if there is a valid id but invalid value', function () {
-					try {
-						expect(Segment.valid(3)).to.throw;
-					} catch (err) {
-						expect(err).to.be.an.instanceof(PathError);
-					}
-				});
 				it('should return an error if a valid id is found but there is an invalid value', function () {
-					try {
-						expect((<any>Segment).valid('/:users', {invalid: 'value'})).to.throw;
-					} catch (err) {
-						expect(err).to.be.an.instanceof(PathError);
-					}
+					expect((<any>Segment).valid('/:users', {invalid: 'value'})).to.be.an.instanceof(PathError);
 				});
 
 				it('should return an error if there is a id/val isParam mismatch', function () {
-					try {
-						expect(Segment.valid([':badParam', null])).to.throw;
-					} catch (err) {
-						expect(err).to.be.an.instanceof(PathError);
-					}
-
-					try {
-						expect(Segment.valid(['badRoute', 'undefined'])).to.throw;
-					} catch (err) {
-						expect(err).to.be.an.instanceof(PathError);
-					}
+					expect(Segment.valid([':badParam', null])).to.be.an.instanceof(PathError);
+					expect(Segment.valid(['badRoute', 'undefined'])).to.be.an.instanceof(PathError);
 				});
 			});
 		});
@@ -342,18 +304,8 @@ describe('Segment', function () {
 			it('should return an error for invalid parameters', function () {
 				let here = 3;
 				let path = 'valid/path';
-
-				try {
-					expect((<any>Segment).match(path, here)).to.throw;
-				} catch (err) {
-					expect(err).to.be.an.instanceof(PathError);
-				}
-
-				try {
-					expect((<any>Segment).match(here, path)).to.throw;
-				} catch (err) {
-					expect(err).to.be.an.instanceof(PathError);
-				}
+				expect((<any>Segment).match(path, here)).to.be.an.instanceof(PathError);
+				expect((<any>Segment).match(here, path)).to.be.an.instanceof(PathError);
 			});
 
 			describe('should return "yes" for exact matches', function () {
@@ -417,7 +369,7 @@ describe('Segment', function () {
 
 			it('may only be updated with a valid identifier', function () {
 				try {
-					expect((<any>seg).id = {invalid: 'id'}).to.throw;
+					expect((<any>seg).id = {invalid: 'id'}).to.throw();
 				} catch (err) {
 					expect(err).to.be.instanceof(PathError);
 				}
@@ -441,7 +393,7 @@ describe('Segment', function () {
 
 			it('may only be updated with a valid value', function () {
 				try {
-					expect((<any>seg).val = {invalid: 'val'}).to.throw;
+					expect((<any>seg).val = {invalid: 'val'}).to.throw();
 				} catch (err) {
 					expect(err).to.be.instanceof(PathError);
 				}
@@ -468,7 +420,7 @@ describe('Segment', function () {
 
 		describe('segment.is()', function () {
 			it('should return "no" if there is an error', function () {
-				expect(new Segment('users').is(<any>['bad', {param: 'value'}])).to.equal('no')
+				expect(new Segment('users').is(<any>['bad', {param: 'value'}])).to.equal('no');
 			});
 		});
 	});

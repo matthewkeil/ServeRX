@@ -3,16 +3,8 @@
 		"printWidth": 120,
 		"adjacent-overload-signatures": true,
 		"no-parameter-reassignment": true,
-		"only-arrow-functions": true,
 		"prefer-for-of": true,
 		"promise-function-async": true,
-		"typedef": [
-			true,
-			"call-signature",
-			"parameter",
-			"property-declaration",
-			"member-variable-declaration"
-		],
 		"await-promise": true,
 		"arrow-parens": false,
 		"arrow-return-shorthand": true,

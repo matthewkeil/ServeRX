@@ -19,7 +19,7 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 
 	public static ValidIdentifier: RegExp = /^(~)$|^(?:\/?(:?[-\w]+)(?:=.*)?)$/;
 	public static ValidValue: RegExp      = /^(?:\/?:?[-\w]+=)?([^\/]*)\/?/;
-	public static ValidSegment: RegExp    = /^(~)|^(?:\/?(:)?([-\w]+)(?:(=)([^\/]*))?)\/?$/;
+	public static ValidSegment: RegExp    = /^(~)$|^(?:\/?(:)?([-\w]+)(?:(=)([^\/]*))?)\/?$/;
 
 	public static validId    = (arg: any): Identifier | PathError => {
 		let id: null | RegExpExecArray;
@@ -58,13 +58,17 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 
 		return new PathError('value must be a valid string, null or undefined', arg);
 	};
-	public static valid      = (arg: any): undefined | ISegment | PathError => {
+	public static valid      = (...args: any[]): undefined | Segment.I | PathError => {
 
-		if (arg instanceof Segment) return [arg[0], arg[1]];
+		let check = args.length > 1
+			? [...args]
+			: args[0];
 
-		if (isString(arg)) {
+		if (check instanceof Segment) return [check[0], check[1]];
 
-			let results = Segment.ValidSegment.exec(arg);
+		if (isString(check)) {
+
+			let results = Segment.ValidSegment.exec(check);
 
 			if (results === null) return undefined;
 
@@ -88,12 +92,12 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 					val];
 		}
 
-		if (isArray(arg) && (arg.length === 2)) {
+		if (isArray(check) && (check.length === 2)) {
 
-			let id = Segment.validId(arg[0]);
+			let id = Segment.validId(check[0]);
 			if (isError(id)) return undefined;
 
-			let val = Segment.validValue(arg[1]);
+			let val = Segment.validValue(check[1]);
 			if (isError(val)) return val;
 
 			if (id.startsWith(':') && isNull(val)) return new PathError('parameter values cannot be null');
@@ -107,11 +111,11 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 	public static match      = (path: string | Segment.I, here: string | Segment.I): Match => {
 
 		let results = Segment.valid(path);
-		if (!results || isError(results)) return results || new PathError('path is invalid', path);
+		if (!results || isError(results)) return new PathError('path is invalid', path);
 		let _path = results;
 
 		results = Segment.valid(here);
-		if (!results || isError(results)) return results || new PathError('here is invalid', here);
+		if (!results || isError(results)) return new PathError('here is invalid', here);
 		let _here = results;
 
 		if (_path[0] === _here[0] && (_path[1] === _here[1])) return 'yes';
@@ -174,13 +178,13 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 		super();
 
 		let results = Segment.valid(
-			arguments.length > 1
-				? [...arguments]
-				: arguments[0]);
+			args.length > 1
+				? [...args]
+				: args[0]);
 
-		if (!results || isError(results)) throw results || new PathError('cannot build an invalid segment', arg);
+		if (!results || isError(results)) throw results || new PathError('cannot build an invalid segment', args);
 
-		[this[0], this[1]] = results;
+		[this[0], this[1]] = <ISegment>results;
 	}
 
 	public is = (here: string | Segment): Segment.Result => {
@@ -192,8 +196,11 @@ export class Segment extends Array<Identifier | Value> implements ISegment {
 
 }
 export namespace Segment {
-	export type ISegment = [Identifier, Value];
-	export type I = Segment | ISegment | string;
+	export interface ISegment extends Array<Identifier | Value> {
+		0: Identifier;
+		1: Value;
+	}
+	export type I = ISegment | string;
 	export type Identifier = string;
 	export type Value = null | undefined | string;
 	export type Result = 'no' | 'yes' | 'maybe' | 'value';

@@ -4,7 +4,8 @@ import {
 	Segment,
 	Path,
 	PathError
-} from './';
+}                     from './';
+import {HandlerError} from './Errors';
 
 
 
@@ -51,11 +52,7 @@ describe('Path', function () {
 
 				it('root indicator must be followed by a slash', function () {
 					path = '~booga/boo/';
-					try {
-						expect(Path.valid(path)).to.throw;
-					} catch (err) {
-						expect(err).to.be.instanceof(PathError);
-					}
+					expect(Path.valid(path)).to.be.instanceof(PathError);
 				});
 			});
 
@@ -92,11 +89,7 @@ describe('Path', function () {
 
 			it('should only throw if a valid segment is found as well', function () {
 				path = [['valid', null], ['bo#oga&"', null], ['#?boo', null]];
-				try {
-					expect(Path.valid(path)).to.throw;
-				} catch (err) {
-					expect(err).to.be.instanceof(PathError);
-				}
+				expect(Path.valid(path)).to.be.instanceof(PathError);
 			});
 
 			it('should only allow the root indicator to be first', function () {
@@ -105,11 +98,7 @@ describe('Path', function () {
 				expect(Path.valid(path, false)).to.deep.equal(PATH);
 
 				path = [['booga', null], ['~', null], ['boo', null]];
-				try {
-					expect(Path.valid(path)).to.throw;
-				} catch (err) {
-					expect(err).to.be.instanceof(PathError);
-				}
+				expect(Path.valid(path)).to.be.instanceof(PathError);
 			});
 		});
 	});
@@ -118,40 +107,20 @@ describe('Path', function () {
 		it('should return an error for invalid parameters', function () {
 			let bad  = [['~', null], ['invalid', {path: 'value'}]];
 			let good = '~/valid/path';
-
-			try {
-				expect((<any>Path).match(good, bad)).to.throw;
-			} catch (err) {
-				expect(err).to.be.an.instanceof(PathError);
-			}
-
-			try {
-				expect((<any>Path).match(bad, good)).to.throw;
-			} catch (err) {
-				expect(err).to.be.an.instanceof(PathError);
-			}
+			expect((<any>Path).match(good, bad)).to.be.instanceof(PathError);
+			expect((<any>Path).match(bad, good)).to.be.instanceof(PathError);
 		});
 
 		let path = '~/valid';
 		let here = '~/valid/path';
 		it('should return an error if path to short to reach "here"', function () {
-
-			try {
-				expect(Path.match(path, here)).to.throw;
-			} catch (err) {
-				expect(err).to.be.an.instanceof(PathError);
-			}
+			expect(Path.match(path, here)).to.be.instanceof(PathError);
 		});
 
 		it('should return an error if paths don\'t match', function () {
 			path = '~/path/not/to/here';
 			here = '~/path/to/here';
-
-			try {
-				expect(Path.match(path, here)).to.throw;
-			} catch (err) {
-				expect(err).to.be.an.instanceof(PathError);
-			}
+			expect(Path.match(path, here)).to.be.instanceof(PathError);
 		});
 
 		it('should return valid results array if paths overlap', function () {
@@ -175,11 +144,10 @@ describe('Path', function () {
 
 			expect(path.last = good).to.equal(good);
 			expect(path.last).to.deep.equal(['good', null]);
-
 			try {
-				expect(path.last = bad).to.throw;
+				expect(path.last = bad).to.throw();
 			} catch (err) {
-				expect(err).to.be.an.instanceof(PathError);
+				expect(err).to.be.instanceof(PathError);
 			}
 		});
 	});

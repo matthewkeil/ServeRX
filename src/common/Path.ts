@@ -64,7 +64,7 @@ export class Path extends Array<Segment> {
 			? undefined
 			: error
 					 ? error
-					 : <Path | Segment.I[]>finalize(valid);
+					 : <Path | ISegment[]>finalize(valid);
 	}
 
 	public static match(_path: Input, _here: Input): Match {
